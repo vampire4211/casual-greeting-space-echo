@@ -32,16 +32,16 @@ const PopularCategories = () => {
   ];
 
   return (
-    <section className="py-20 bg-primary/5">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-4">Popular Categories</h2>
-          <p className="text-xl text-muted-foreground">Find the perfect service for your event</p>
+          <h2 className="text-4xl font-bold text-primary-900 mb-4">Popular Categories</h2>
+          <p className="text-xl text-primary-700">Find the perfect service for your event</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => (
-            <Card key={category.id} className="group cursor-pointer hover:shadow-lg transition-all duration-300">
+            <Card key={category.id} className="group cursor-pointer hover:shadow-lg transition-all duration-300 border-primary-200 hover:border-primary-400">
               <CardContent className="p-0">
                 <div className="relative overflow-hidden">
                   <img 
@@ -51,11 +51,13 @@ const PopularCategories = () => {
                   />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-primary-800 transition-colors text-primary-900">
                     {category.name}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed mb-4">{category.description}</p>
-                  <Button variant="outline" className="w-full">Explore</Button>
+                  <p className="text-primary-700 leading-relaxed mb-4">{category.description}</p>
+                  <Button variant="outline" className="w-full border-primary-400 text-primary-800 hover:bg-primary-100">
+                    Explore
+                  </Button>
                 </div>
               </CardContent>
             </Card>

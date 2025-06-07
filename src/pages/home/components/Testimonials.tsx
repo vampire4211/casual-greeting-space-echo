@@ -28,19 +28,19 @@ const Testimonials = () => {
   ];
 
   return (
-    <section className="py-20 bg-primary text-primary-foreground">
+    <section className="py-20 bg-primary-800">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">What Our Clients Say</h2>
-          <p className="text-xl opacity-90">Real experiences from real customers</p>
+          <h2 className="text-4xl font-bold mb-4 text-white">What Our Clients Say</h2>
+          <p className="text-xl text-primary-100">Real experiences from real customers</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial) => (
-            <Card key={testimonial.id} className="bg-white/10 backdrop-blur border-white/20">
+            <Card key={testimonial.id} className="bg-white/10 backdrop-blur border-white/20 hover:bg-white/15 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="mb-4">
-                  <p className="text-lg italic leading-relaxed">"{testimonial.content}"</p>
+                  <p className="text-lg italic leading-relaxed text-white">"{testimonial.content}"</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <img 
@@ -49,8 +49,8 @@ const Testimonials = () => {
                     className="w-12 h-12 rounded-full object-cover border-2 border-white/30"
                   />
                   <div>
-                    <h4 className="font-semibold">{testimonial.name}</h4>
-                    <p className="text-sm opacity-80">{testimonial.location}</p>
+                    <h4 className="font-semibold text-white">{testimonial.name}</h4>
+                    <p className="text-sm text-primary-200">{testimonial.location}</p>
                   </div>
                 </div>
               </CardContent>

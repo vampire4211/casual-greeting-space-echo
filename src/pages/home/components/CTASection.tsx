@@ -17,10 +17,10 @@ const CTASection = () => {
           Whether you're planning a wedding, corporate event, or birthday party, we've got you covered.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-primary hover:bg-primary/90">
+          <Button size="lg" className="bg-primary-600 hover:bg-primary-700 text-white border-0">
             Find Vendors
           </Button>
-          <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-foreground">
+          <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary-800">
             Become a Vendor
           </Button>
         </div>
