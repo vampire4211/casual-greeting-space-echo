@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
@@ -23,13 +22,12 @@ const Navbar = () => {
       scrolled ? 'py-2 lg:py-3 shadow-md' : 'py-4 lg:py-5'
     }`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-2 text-xl lg:text-2xl font-bold text-primary">
+        <Link to="/" className="flex items-center">
           <img 
             src="/lovable-uploads/1b617e92-9eed-43c3-930b-89645adc6360.png" 
             alt="Event Sathi Logo" 
-            className="h-6 w-6 lg:h-7 lg:w-7 object-contain"
+            className="h-10 w-10 lg:h-12 lg:w-12 object-contain filter brightness-75 contrast-125"
           />
-          Event Sathi
         </Link>
         
         {/* Desktop Menu */}
