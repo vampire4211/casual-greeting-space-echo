@@ -44,40 +44,42 @@ const TrendingCarousel = () => {
   ];
 
   return (
-    <section className="py-20 bg-primary-100">
+    <section className="py-16 lg:py-20 bg-primary-100">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-primary-900 relative inline-block">
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary-900 relative inline-block mb-4">
             Trending Categories
             <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary-800 rounded-full"></span>
           </h2>
-          <p className="text-xl text-primary-700 mt-4">Discover the most popular event services</p>
+          <p className="text-lg sm:text-xl text-primary-700 mt-4">Discover the most popular event services</p>
         </div>
 
-        <Carousel className="w-full max-w-6xl mx-auto">
-          <CarouselContent className="-ml-4">
-            {categories.map((item) => (
-              <CarouselItem key={item.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                <Card className="h-80 overflow-hidden group cursor-pointer border-primary-300 hover:border-primary-500 transition-all duration-300">
-                  <CardContent className="p-0 relative h-full">
-                    <img 
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                      <h3 className="text-xl font-semibold mb-2 text-white">{item.title}</h3>
-                      <p className="text-sm text-primary-100">{item.subtitle}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-0 border-primary-400 bg-white hover:bg-primary-50" />
-          <CarouselNext className="right-0 border-primary-400 bg-white hover:bg-primary-50" />
-        </Carousel>
+        <div className="relative">
+          <Carousel className="w-full max-w-6xl mx-auto">
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {categories.map((item) => (
+                <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                  <Card className="h-72 sm:h-80 overflow-hidden group cursor-pointer border-primary-300 hover:border-primary-500 transition-all duration-300">
+                    <CardContent className="p-0 relative h-full">
+                      <img 
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">{item.title}</h3>
+                        <p className="text-sm text-primary-100">{item.subtitle}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex left-0 border-primary-400 bg-white hover:bg-primary-50" />
+            <CarouselNext className="hidden md:flex right-0 border-primary-400 bg-white hover:bg-primary-50" />
+          </Carousel>
+        </div>
       </div>
     </section>
   );

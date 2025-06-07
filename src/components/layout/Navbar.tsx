@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Calendar } from 'lucide-react';
+import { Calendar, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,15 +20,16 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-sm ${
-      scrolled ? 'py-3 shadow-md' : 'py-5'
+      scrolled ? 'py-2 lg:py-3 shadow-md' : 'py-4 lg:py-5'
     }`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-primary">
-          <Calendar className="h-7 w-7" />
+        <Link to="/" className="flex items-center gap-2 text-xl lg:text-2xl font-bold text-primary">
+          <Calendar className="h-6 w-6 lg:h-7 lg:w-7" />
           Event Sathi
         </Link>
         
-        <div className="hidden md:flex items-center gap-8">
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex items-center gap-8">
           <Link to="/" className="font-medium text-gray-700 hover:text-primary transition-colors">
             Home
           </Link>
@@ -42,11 +44,11 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Desktop Buttons */}
+        <div className="hidden lg:flex items-center gap-3">
           <Button 
             variant="outline" 
             onClick={() => navigate('/signin')}
-            className="hidden sm:inline-flex"
           >
             Sign In
           </Button>
@@ -54,6 +56,72 @@ const Navbar = () => {
             Sign Up
           </Button>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="lg:hidden p-2"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 lg:hidden">
+            <div className="px-4 py-6 space-y-4">
+              <Link 
+                to="/" 
+                className="block py-3 text-lg font-medium text-gray-700 hover:text-primary transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
+                to="/categories" 
+                className="block py-3 text-lg font-medium text-gray-700 hover:text-primary transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Categories
+              </Link>
+              <Link 
+                to="/events" 
+                className="block py-3 text-lg font-medium text-gray-700 hover:text-primary transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Events
+              </Link>
+              <Link 
+                to="/about" 
+                className="block py-3 text-lg font-medium text-gray-700 hover:text-primary transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About Us
+              </Link>
+              
+              <div className="pt-4 border-t border-gray-200 space-y-3">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    navigate('/signin');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-3 text-base"
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  onClick={() => {
+                    navigate('/signup');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-3 text-base"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

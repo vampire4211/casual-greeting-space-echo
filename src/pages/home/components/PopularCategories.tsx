@@ -2,60 +2,68 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const PopularCategories = () => {
+  const navigate = useNavigate();
+
   const categories = [
     {
       id: 1,
-      name: "Wedding Planners",
-      image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop",
-      description: "Professional planners to make your dream wedding come true"
+      title: "Wedding Planners",
+      description: "Professional planners to make your dream wedding come true",
+      image: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=400&h=300&fit=crop"
     },
     {
       id: 2,
-      name: "Corporate Events",
-      image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop",
-      description: "Experts in organizing successful corporate gatherings"
+      title: "Corporate Events",
+      description: "Experts in organizing successful corporate gatherings",
+      image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop"
     },
     {
       id: 3,
-      name: "Birthday Parties",
-      image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop",
-      description: "Make every birthday celebration memorable"
+      title: "Birthday Parties",
+      description: "Make every birthday celebration memorable",
+      image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop"
     },
     {
       id: 4,
-      name: "Photobooths",
-      image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=300&fit=crop",
-      description: "Fun and creative photo experiences for your guests"
+      title: "Photobooths",
+      description: "Fun and creative photo experiences for your guests",
+      image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop"
     }
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-16 lg:py-20 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-primary-900 mb-4">Popular Categories</h2>
-          <p className="text-xl text-primary-700">Find the perfect service for your event</p>
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 relative inline-block mb-4">
+            Popular Categories
+            <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary rounded-full"></span>
+          </h2>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => (
-            <Card key={category.id} className="group cursor-pointer hover:shadow-lg transition-all duration-300 border-primary-200 hover:border-primary-400">
+            <Card key={category.id} className="group cursor-pointer hover:shadow-lg transition-all duration-300">
               <CardContent className="p-0">
                 <div className="relative overflow-hidden">
                   <img 
                     src={category.image}
-                    alt={category.name}
-                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    alt={category.title}
+                    className="w-full h-48 sm:h-56 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-3 group-hover:text-primary-800 transition-colors text-primary-900">
-                    {category.name}
-                  </h3>
-                  <p className="text-primary-700 leading-relaxed mb-4">{category.description}</p>
-                  <Button variant="outline" className="w-full border-primary-400 text-primary-800 hover:bg-primary-100">
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 text-gray-900">{category.title}</h3>
+                  <p className="text-gray-600 mb-4 text-sm sm:text-base leading-relaxed">{category.description}</p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => navigate('/categories')}
+                    className="w-full py-2 text-base"
+                  >
                     Explore
                   </Button>
                 </div>
