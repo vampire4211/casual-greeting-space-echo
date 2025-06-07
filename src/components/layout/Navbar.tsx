@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Calendar, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
@@ -24,7 +24,11 @@ const Navbar = () => {
     }`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2 text-xl lg:text-2xl font-bold text-primary">
-          <Calendar className="h-6 w-6 lg:h-7 lg:w-7" />
+          <img 
+            src="/lovable-uploads/1b617e92-9eed-43c3-930b-89645adc6360.png" 
+            alt="Event Sathi Logo" 
+            className="h-6 w-6 lg:h-7 lg:w-7 object-contain"
+          />
           Event Sathi
         </Link>
         
