@@ -8,6 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { Check, CreditCard, Smartphone } from 'lucide-react';
 import { razorpayService } from '@/services/razorpayService';
 
+interface PaymentResult {
+  success: boolean;
+  paymentId?: string;
+  orderId?: string;
+  signature?: string;
+  error?: string;
+}
+
 const Payment = () => {
   const navigate = useNavigate();
   const [categoryCount, setCategoryCount] = useState('≤3');
@@ -50,7 +58,7 @@ const Payment = () => {
         amount,
         planName: `${selectedPlanData.name} Plan`,
         userDetails
-      });
+      }) as PaymentResult;
 
       if (paymentResult.success) {
         // Payment successful
@@ -64,7 +72,8 @@ const Payment = () => {
       }
     } catch (error: any) {
       console.error('Payment failed:', error);
-      alert(`Payment failed: ${error.error || 'Unknown error occurred'}`);
+      const errorMessage = error?.error || 'Unknown error occurred';
+      alert(`Payment failed: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
