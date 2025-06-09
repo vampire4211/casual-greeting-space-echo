@@ -1,15 +1,17 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Eye, EyeOff } from 'lucide-react';
+import DocumentVerification from '@/components/verification/DocumentVerification';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState('customer');
   const [showPassword, setShowPassword] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'verification', 'complete'
+  const [verificationComplete, setVerificationComplete] = useState(false);
   
   const [customerData, setCustomerData] = useState({
     name: '',
@@ -47,7 +49,7 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (userType === 'vendor') {
@@ -55,13 +57,48 @@ const SignUp = () => {
         alert('Please select at least one category');
         return;
       }
-      console.log('Vendor signup:', vendorData, selectedCategories);
-      navigate('/vendor/dashboard');
+      // Move to verification step for vendors
+      setCurrentStep('verification');
     } else {
       console.log('Customer signup:', customerData);
       navigate('/');
     }
   };
+
+  const handleVerificationComplete = (verifiedData: any) => {
+    setVerificationComplete(true);
+    console.log('Vendor signup with verification:', {
+      ...vendorData,
+      categories: selectedCategories,
+      verification: verifiedData
+    });
+    
+    // Navigate to subscription page after verification
+    setTimeout(() => {
+      navigate('/payment');
+    }, 2000);
+  };
+
+  if (currentStep === 'verification' && userType === 'vendor') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 to-blue-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-2xl">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Calendar className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold text-primary">Event Sathi</span>
+            </div>
+            <CardTitle className="text-2xl">Document Verification</CardTitle>
+            <p className="text-gray-600">Complete KYC to activate your vendor account</p>
+          </CardHeader>
+          
+          <CardContent>
+            <DocumentVerification onVerificationComplete={handleVerificationComplete} />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-blue-50 flex items-center justify-center p-4">
@@ -101,7 +138,7 @@ const SignUp = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleFormSubmit} className="space-y-4">
             {userType === 'customer' ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -228,26 +265,6 @@ const SignUp = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Aadhaar Number</label>
-                    <input 
-                      type="text"
-                      value={vendorData.aadhaar}
-                      onChange={(e) => setVendorData({...vendorData, aadhaar: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">PAN Number</label>
-                    <input 
-                      type="text"
-                      value={vendorData.pan}
-                      onChange={(e) => setVendorData({...vendorData, pan: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      required
-                    />
-                  </div>
-                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">GST Number (Optional)</label>
                     <input 
                       type="text"
@@ -315,7 +332,7 @@ const SignUp = () => {
             )}
 
             <Button type="submit" className="w-full">
-              Create Account
+              {userType === 'vendor' ? 'Proceed to Verification' : 'Create Account'}
             </Button>
 
             {userType === 'customer' && (

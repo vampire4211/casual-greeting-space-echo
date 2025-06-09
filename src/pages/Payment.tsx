@@ -6,11 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, CreditCard, Smartphone } from 'lucide-react';
+import { razorpayService } from '@/services/razorpayService';
 
 const Payment = () => {
   const navigate = useNavigate();
   const [categoryCount, setCategoryCount] = useState('≤3');
   const [selectedPlan, setSelectedPlan] = useState('basic');
+  const [loading, setLoading] = useState(false);
 
   const plans = {
     basic: {
@@ -30,12 +32,42 @@ const Payment = () => {
     }
   };
 
-  const handlePayment = () => {
-    // Simulate payment processing
-    setTimeout(() => {
-      alert('Payment successful! Your plan has been activated.');
-      navigate('/vendor/dashboard');
-    }, 2000);
+  const handlePayment = async () => {
+    setLoading(true);
+    
+    try {
+      const selectedPlanData = plans[selectedPlan as keyof typeof plans];
+      const amount = selectedPlanData.price[categoryCount as '≤3' | '>3'];
+      
+      // Mock user details - in real app, get from auth context
+      const userDetails = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        phone: '9876543210'
+      };
+
+      const paymentResult = await razorpayService.initiatePayment({
+        amount,
+        planName: `${selectedPlanData.name} Plan`,
+        userDetails
+      });
+
+      if (paymentResult.success) {
+        // Payment successful
+        console.log('Payment successful:', paymentResult);
+        
+        // Here you would typically send the payment details to your backend
+        // to verify and activate the subscription
+        
+        alert('Payment successful! Your subscription has been activated.');
+        navigate('/vendor/dashboard');
+      }
+    } catch (error: any) {
+      console.error('Payment failed:', error);
+      alert(`Payment failed: ${error.error || 'Unknown error occurred'}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -164,8 +196,9 @@ const Payment = () => {
                   size="lg" 
                   className="w-full"
                   onClick={handlePayment}
+                  disabled={loading}
                 >
-                  Proceed to Payment
+                  {loading ? 'Processing...' : 'Pay with Razorpay'}
                 </Button>
               </div>
 
