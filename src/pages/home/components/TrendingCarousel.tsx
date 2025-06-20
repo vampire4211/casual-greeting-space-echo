@@ -71,30 +71,30 @@ const TrendingCarousel = () => {
       cell.style.pointerEvents = 'auto';
       cell.style.zIndex = (10 - Math.abs(position)).toString();
 
-      // Position cards with slight curve and overlaps
+      // Position cards with increased spacing and slight curve
       if (position === 0) {
         // Center card
         cell.style.transform = 'translateX(0) scale(1.1)';
         const card = cell.querySelector('.card') as HTMLElement;
         if (card) card.style.boxShadow = '0 15px 30px rgba(0,0,0,0.3)';
       } else if (position === -1) {
-        // Left 1
-        cell.style.transform = 'translateX(-180px) rotateY(15deg) scale(0.95)';
+        // Left 1 - increased distance
+        cell.style.transform = 'translateX(-280px) rotateY(15deg) scale(0.95)';
         const card = cell.querySelector('.card') as HTMLElement;
         if (card) card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
       } else if (position === -2) {
-        // Left 2
-        cell.style.transform = 'translateX(-320px) rotateY(25deg) scale(0.9)';
+        // Left 2 - increased distance
+        cell.style.transform = 'translateX(-480px) rotateY(25deg) scale(0.9)';
         const card = cell.querySelector('.card') as HTMLElement;
         if (card) card.style.boxShadow = '0 8px 15px rgba(0,0,0,0.1)';
       } else if (position === 1) {
-        // Right 1
-        cell.style.transform = 'translateX(180px) rotateY(-15deg) scale(0.95)';
+        // Right 1 - increased distance
+        cell.style.transform = 'translateX(280px) rotateY(-15deg) scale(0.95)';
         const card = cell.querySelector('.card') as HTMLElement;
         if (card) card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
       } else if (position === 2) {
-        // Right 2
-        cell.style.transform = 'translateX(320px) rotateY(-25deg) scale(0.9)';
+        // Right 2 - increased distance
+        cell.style.transform = 'translateX(480px) rotateY(-25deg) scale(0.9)';
         const card = cell.querySelector('.card') as HTMLElement;
         if (card) card.style.boxShadow = '0 8px 15px rgba(0,0,0,0.1)';
       }
@@ -166,7 +166,7 @@ const TrendingCarousel = () => {
                 key={item.id}
                 className="carousel__cell absolute w-[280px] h-[380px] left-1/2 top-1/2 -ml-[140px] -mt-[190px] transition-all duration-500 ease-in-out transform-origin-center"
               >
-                <Card className="card h-full w-full rounded-lg overflow-hidden relative border-primary-300 shadow-lg transition-transform duration-500">
+                <Card className="h-full w-full rounded-lg overflow-hidden relative border-primary-300 shadow-lg transition-transform duration-500">
                   <CardContent className="p-0 relative h-full">
                     <img
                       src={item.image}
