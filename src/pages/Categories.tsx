@@ -92,7 +92,7 @@ const Categories = () => {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-primary-50">
       <Navbar />
       
       <div className="pt-32 pb-20">
@@ -161,7 +161,7 @@ const Categories = () => {
             {filteredVendors.map((vendor) => (
               <Card 
                 key={vendor.id} 
-                className="group cursor-pointer hover:shadow-lg transition-all duration-300"
+                className="group cursor-pointer hover:shadow-lg transition-all duration-300 bg-white"
                 onClick={() => navigate(`/vendor/${vendor.id}`)}
               >
                 <CardContent className="p-0">
@@ -180,7 +180,7 @@ const Categories = () => {
                   
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                      <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-800 transition-colors">
                         {vendor.name}
                       </h3>
                       <div className="flex items-center gap-1">
@@ -190,7 +190,7 @@ const Categories = () => {
                     </div>
                     
                     <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                      <span className="bg-primary/10 text-primary px-2 py-1 rounded">
+                      <span className="bg-primary-700 text-white px-2 py-1 rounded text-xs font-medium">
                         {vendor.category}
                       </span>
                       <div className="flex items-center gap-1">
@@ -204,9 +204,9 @@ const Categories = () => {
                       <span>{vendor.reviews} reviews</span>
                     </div>
                     
-                    <p className="text-primary font-semibold mb-4">{vendor.price}</p>
+                    <p className="text-green-700 font-bold text-lg mb-4">{vendor.price}</p>
                     
-                    <Button className="w-full">
+                    <Button className="w-full bg-primary-700 hover:bg-primary-800">
                       View Details
                     </Button>
                   </div>

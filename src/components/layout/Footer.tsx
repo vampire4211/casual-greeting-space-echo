@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white pt-20 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
           <div>
             <h3 className="text-xl font-semibold mb-6 relative">
               Event Sathi
@@ -56,6 +56,20 @@ const Footer = () => {
               <li><Link to="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold mb-6 relative">
+              FAQ
+              <span className="absolute bottom-0 left-0 w-10 h-0.5 bg-primary"></span>
+            </h3>
+            <ul className="space-y-3">
+              <li><Link to="/faq#booking" className="text-gray-400 hover:text-white transition-colors">How to book?</Link></li>
+              <li><Link to="/faq#payment" className="text-gray-400 hover:text-white transition-colors">Payment methods</Link></li>
+              <li><Link to="/faq#cancellation" className="text-gray-400 hover:text-white transition-colors">Cancellation policy</Link></li>
+              <li><Link to="/faq#vendor" className="text-gray-400 hover:text-white transition-colors">Become a vendor</Link></li>
+              <li><Link to="/faq#support" className="text-gray-400 hover:text-white transition-colors">Get support</Link></li>
             </ul>
           </div>
 

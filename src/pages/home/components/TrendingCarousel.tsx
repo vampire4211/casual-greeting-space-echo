@@ -2,6 +2,7 @@
 import React from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
+import Autoplay from "embla-carousel-autoplay";
 
 const TrendingCarousel = () => {
   const categories = [
@@ -55,7 +56,18 @@ const TrendingCarousel = () => {
         </div>
 
         <div className="relative">
-          <Carousel className="w-full max-w-6xl mx-auto">
+          <Carousel 
+            className="w-full max-w-6xl mx-auto"
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 2000,
+              }),
+            ]}
+          >
             <CarouselContent className="-ml-2 md:-ml-4">
               {categories.map((item) => (
                 <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
