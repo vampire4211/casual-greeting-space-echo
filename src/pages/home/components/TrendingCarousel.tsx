@@ -1,10 +1,13 @@
 
-import React from 'react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import Autoplay from "embla-carousel-autoplay";
 
 const TrendingCarousel = () => {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const selectedIndexRef = useRef(0);
+  const rotateIntervalRef = useRef<NodeJS.Timeout>();
+  const autoRotateRef = useRef(true);
+
   const categories = [
     {
       id: 1,
@@ -44,6 +47,100 @@ const TrendingCarousel = () => {
     }
   ];
 
+  const positionCells = () => {
+    if (!carouselRef.current) return;
+    
+    const cells = Array.from(carouselRef.current.children) as HTMLElement[];
+    const centerIndex = selectedIndexRef.current;
+    const cellCount = categories.length;
+
+    cells.forEach((cell, i) => {
+      // Calculate relative position to center
+      let position = (i - centerIndex + cellCount) % cellCount;
+      if (position > cellCount / 2) position -= cellCount;
+
+      // Only show nearby cards
+      if (Math.abs(position) > 2) {
+        cell.style.opacity = '0';
+        cell.style.pointerEvents = 'none';
+        cell.style.transform = 'translateX(-1000px)';
+        return;
+      }
+
+      cell.style.opacity = '1';
+      cell.style.pointerEvents = 'auto';
+      cell.style.zIndex = (10 - Math.abs(position)).toString();
+
+      // Position cards with slight curve and overlaps
+      if (position === 0) {
+        // Center card
+        cell.style.transform = 'translateX(0) scale(1.1)';
+        const card = cell.querySelector('.card') as HTMLElement;
+        if (card) card.style.boxShadow = '0 15px 30px rgba(0,0,0,0.3)';
+      } else if (position === -1) {
+        // Left 1
+        cell.style.transform = 'translateX(-180px) rotateY(15deg) scale(0.95)';
+        const card = cell.querySelector('.card') as HTMLElement;
+        if (card) card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+      } else if (position === -2) {
+        // Left 2
+        cell.style.transform = 'translateX(-320px) rotateY(25deg) scale(0.9)';
+        const card = cell.querySelector('.card') as HTMLElement;
+        if (card) card.style.boxShadow = '0 8px 15px rgba(0,0,0,0.1)';
+      } else if (position === 1) {
+        // Right 1
+        cell.style.transform = 'translateX(180px) rotateY(-15deg) scale(0.95)';
+        const card = cell.querySelector('.card') as HTMLElement;
+        if (card) card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+      } else if (position === 2) {
+        // Right 2
+        cell.style.transform = 'translateX(320px) rotateY(-25deg) scale(0.9)';
+        const card = cell.querySelector('.card') as HTMLElement;
+        if (card) card.style.boxShadow = '0 8px 15px rgba(0,0,0,0.1)';
+      }
+    });
+  };
+
+  const rotateToIndex = (index: number) => {
+    selectedIndexRef.current = (index + categories.length) % categories.length;
+    positionCells();
+  };
+
+  const startAutoRotation = () => {
+    if (autoRotateRef.current) {
+      rotateIntervalRef.current = setInterval(() => {
+        rotateToIndex(selectedIndexRef.current + 1);
+      }, 3000);
+    }
+  };
+
+  const stopAutoRotation = () => {
+    if (rotateIntervalRef.current) {
+      clearInterval(rotateIntervalRef.current);
+    }
+  };
+
+  const handlePrevious = () => {
+    stopAutoRotation();
+    rotateToIndex(selectedIndexRef.current - 1);
+    setTimeout(startAutoRotation, 10000);
+  };
+
+  const handleNext = () => {
+    stopAutoRotation();
+    rotateToIndex(selectedIndexRef.current + 1);
+    setTimeout(startAutoRotation, 10000);
+  };
+
+  useEffect(() => {
+    positionCells();
+    startAutoRotation();
+
+    return () => {
+      stopAutoRotation();
+    };
+  }, []);
+
   return (
     <section className="py-16 lg:py-20 bg-primary-100 overflow-hidden">
       <div className="container mx-auto px-4">
@@ -52,53 +149,55 @@ const TrendingCarousel = () => {
             Trending Categories
             <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary-800 rounded-full"></span>
           </h2>
-          <p className="text-lg sm:text-xl text-primary-700 mt-4">Discover the most popular event services</p>
+          <p className="text-lg sm:text-xl text-primary-700 mt-4">
+            Discover the most popular event services
+          </p>
         </div>
 
-        <div className="relative" style={{ perspective: '1000px' }}>
-          <Carousel 
-            className="w-full max-w-6xl mx-auto"
-            opts={{
-              align: "center",
-              loop: true,
-            }}
-            plugins={[
-              Autoplay({
-                delay: 2000,
-              }),
-            ]}
+        <div className="relative" style={{ perspective: '1200px' }}>
+          <div
+            ref={carouselRef}
+            className="carousel w-full h-[500px] relative transform-style-preserve-3d"
+            onMouseEnter={stopAutoRotation}
+            onMouseLeave={startAutoRotation}
           >
-            <CarouselContent className="-ml-2 md:-ml-4" style={{ transformStyle: 'preserve-3d' }}>
-              {categories.map((item, index) => (
-                <CarouselItem 
-                  key={item.id} 
-                  className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
-                  style={{
-                    transform: `rotateY(${index * 60}deg) translateZ(200px)`,
-                    transformOrigin: 'center center',
-                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-                  }}
-                >
-                  <Card className="h-72 sm:h-80 overflow-hidden group cursor-pointer border-primary-300 hover:border-primary-500 transition-all duration-500 transform hover:scale-105 hover:rotateX-2 hover:shadow-2xl">
-                    <CardContent className="p-0 relative h-full">
-                      <img 
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                        <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white transform transition-transform duration-300 group-hover:translate-y-[-4px]">{item.title}</h3>
-                        <p className="text-sm text-primary-100 transform transition-transform duration-300 group-hover:translate-y-[-2px]">{item.subtitle}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex left-0 border-primary-400 bg-white hover:bg-primary-50 z-10" />
-            <CarouselNext className="hidden md:flex right-0 border-primary-400 bg-white hover:bg-primary-50 z-10" />
-          </Carousel>
+            {categories.map((item) => (
+              <div
+                key={item.id}
+                className="carousel__cell absolute w-[280px] h-[380px] left-1/2 top-1/2 -ml-[140px] -mt-[190px] transition-all duration-500 ease-in-out transform-origin-center"
+              >
+                <Card className="card h-full w-full rounded-lg overflow-hidden relative border-primary-300 shadow-lg transition-transform duration-500">
+                  <CardContent className="p-0 relative h-full">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                      <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                      <p className="text-sm text-primary-100">{item.subtitle}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
+
+          <div className="carousel-options absolute bottom-5 left-0 right-0 flex justify-center gap-5 z-10">
+            <button
+              onClick={handlePrevious}
+              className="px-5 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-all duration-300"
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleNext}
+              className="px-5 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-all duration-300"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </section>
