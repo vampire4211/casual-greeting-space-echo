@@ -49,7 +49,7 @@ const PopularCategories = () => {
   ];
 
   return (
-    <section className="py-16 lg:py-20 bg-gray-50">
+    <section className="py-16 lg:py-20 bg-gray-50 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 relative inline-block mb-4">
@@ -58,50 +58,61 @@ const PopularCategories = () => {
           </h2>
         </div>
 
-        <Carousel 
-          className="w-full max-w-6xl mx-auto"
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          plugins={[
-            Autoplay({
-              delay: 2000,
-            }),
-          ]}
-        >
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {categories.map((category) => (
-              <CarouselItem key={category.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                <Card className="group cursor-pointer hover:shadow-lg transition-all duration-300">
-                  <CardContent className="p-0">
-                    <div className="relative overflow-hidden">
-                      <img 
-                        src={category.image}
-                        alt={category.title}
-                        className="w-full h-48 sm:h-56 object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="p-4 sm:p-6">
-                      <h3 className="text-lg sm:text-xl font-semibold mb-3 text-gray-900">{category.title}</h3>
-                      <p className="text-gray-600 mb-4 text-sm sm:text-base leading-relaxed">{category.description}</p>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => navigate('/categories')}
-                        className="w-full py-2 text-base"
-                      >
-                        Explore
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="hidden md:flex left-0" />
-          <CarouselNext className="hidden md:flex right-0" />
-        </Carousel>
+        <div className="relative" style={{ perspective: '1200px' }}>
+          <Carousel 
+            className="w-full max-w-6xl mx-auto"
+            opts={{
+              align: "center",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 2000,
+              }),
+            ]}
+          >
+            <CarouselContent className="-ml-2 md:-ml-4" style={{ transformStyle: 'preserve-3d' }}>
+              {categories.map((category, index) => (
+                <CarouselItem 
+                  key={category.id} 
+                  className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
+                  style={{
+                    transform: `rotateY(${index * 60}deg) translateZ(250px)`,
+                    transformOrigin: 'center center',
+                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                >
+                  <Card className="group cursor-pointer hover:shadow-xl transition-all duration-500 transform hover:scale-105 hover:rotateX-3 hover:translateY-[-8px] bg-white border border-gray-200 hover:border-primary/30">
+                    <CardContent className="p-0">
+                      <div className="relative overflow-hidden">
+                        <img 
+                          src={category.image}
+                          alt={category.title}
+                          className="w-full h-48 sm:h-56 object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </div>
+                      <div className="p-4 sm:p-6">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-3 text-gray-900 transition-all duration-300 group-hover:text-primary-800 group-hover:transform group-hover:translateY-[-2px]">{category.title}</h3>
+                        <p className="text-gray-600 mb-4 text-sm sm:text-base leading-relaxed transition-transform duration-300 group-hover:translateY-[-1px]">{category.description}</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => navigate('/categories')}
+                          className="w-full py-2 text-base transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary transform hover:translateY-[-2px] hover:shadow-lg"
+                        >
+                          Explore
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex left-0 z-10 hover:scale-110 transition-transform duration-200" />
+            <CarouselNext className="hidden md:flex right-0 z-10 hover:scale-110 transition-transform duration-200" />
+          </Carousel>
+        </div>
       </div>
     </section>
   );
