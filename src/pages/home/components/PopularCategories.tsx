@@ -1,8 +1,8 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const PopularCategories = () => {
   const navigate = useNavigate();
@@ -206,20 +206,18 @@ const PopularCategories = () => {
             ))}
           </div>
 
-          <div className="carousel-options absolute bottom-5 left-0 right-0 flex justify-center gap-5 z-10">
-            <button
-              onClick={handlePrevious}
-              className="px-5 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-all duration-300"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNext}
-              className="px-5 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-all duration-300"
-            >
-              Next
-            </button>
-          </div>
+          <button
+            onClick={handlePrevious}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-all duration-300 shadow-lg z-20 flex items-center justify-center"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-all duration-300 shadow-lg z-20 flex items-center justify-center"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const TrendingCarousel = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -142,14 +142,14 @@ const TrendingCarousel = () => {
   }, []);
 
   return (
-    <section className="py-16 lg:py-20 bg-primary-100 overflow-hidden">
+    <section className="py-16 lg:py-20 bg-gray-50 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-primary-900 relative inline-block mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 relative inline-block mb-4">
             Trending Categories
-            <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary-800 rounded-full"></span>
+            <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-primary rounded-full"></span>
           </h2>
-          <p className="text-lg sm:text-xl text-primary-700 mt-4">
+          <p className="text-lg sm:text-xl text-gray-700 mt-4">
             Discover the most popular event services
           </p>
         </div>
@@ -166,17 +166,17 @@ const TrendingCarousel = () => {
                 key={item.id}
                 className="carousel__cell absolute w-[280px] h-[380px] left-1/2 top-1/2 -ml-[140px] -mt-[190px] transition-all duration-500 ease-in-out transform-origin-center"
               >
-                <Card className="h-full w-full rounded-lg overflow-hidden relative border-primary-300 shadow-lg transition-transform duration-500">
+                <Card className="h-full w-full rounded-lg overflow-hidden relative border-gray-200 shadow-lg transition-transform duration-500">
                   <CardContent className="p-0 relative h-full">
                     <img
                       src={item.image}
                       alt={item.title}
                       className="w-full h-full object-cover transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                       <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                      <p className="text-sm text-primary-100">{item.subtitle}</p>
+                      <p className="text-sm text-gray-100">{item.subtitle}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -184,20 +184,18 @@ const TrendingCarousel = () => {
             ))}
           </div>
 
-          <div className="carousel-options absolute bottom-5 left-0 right-0 flex justify-center gap-5 z-10">
-            <button
-              onClick={handlePrevious}
-              className="px-5 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-all duration-300"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNext}
-              className="px-5 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-all duration-300"
-            >
-              Next
-            </button>
-          </div>
+          <button
+            onClick={handlePrevious}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-all duration-300 shadow-lg z-20 flex items-center justify-center"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-all duration-300 shadow-lg z-20 flex items-center justify-center"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
     </section>
