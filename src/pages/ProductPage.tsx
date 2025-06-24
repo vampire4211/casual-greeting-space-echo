@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -42,7 +43,7 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F0EAD6' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
       <Navbar />
       
       <div className="pt-24 pb-20">

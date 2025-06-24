@@ -97,7 +97,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
       <Navbar />
       
       <div className="pt-20 h-screen flex">

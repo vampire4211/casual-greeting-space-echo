@@ -85,7 +85,7 @@ const Categories = () => {
   });
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F0EAD6' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
       <Navbar />
       
       <div className="pt-32 pb-20">
