@@ -79,7 +79,7 @@ const Payment = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F0EAD6' }}>
       <Navbar />
       
       <div className="pt-32 pb-20">

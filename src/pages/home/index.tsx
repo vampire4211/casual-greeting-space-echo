@@ -11,7 +11,7 @@ import ChatIcon from './components/ChatIcon';
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F0EAD6' }}>
       <Navbar />
       <HeroSection />
       <TrendingCarousel />
