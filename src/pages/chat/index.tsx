@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import ChatSidebar from './components/ChatSidebar';
@@ -98,7 +97,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F5F5' }}>
       <Navbar />
       
       <div className="pt-20 h-screen flex">
