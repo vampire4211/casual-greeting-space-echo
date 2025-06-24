@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Star, MapPin, Users, Filter } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import FilterSection from './categories/components/FilterSection';
+import VendorCard from './categories/components/VendorCard';
 
 const Categories = () => {
-  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [priceRange, setPriceRange] = useState('');
@@ -82,9 +79,6 @@ const Categories = () => {
     }
   ];
 
-  const categories = ['All', 'Photography', 'Catering', 'Venue', 'Decor', 'Music', 'Makeup'];
-  const locations = ['All', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Pune', 'Hyderabad'];
-
   const filteredVendors = vendors.filter(vendor => {
     return (selectedCategory === '' || selectedCategory === 'All' || vendor.category === selectedCategory) &&
            (selectedLocation === '' || selectedLocation === 'All' || vendor.location === selectedLocation);
@@ -101,116 +95,20 @@ const Categories = () => {
             <p className="text-xl text-gray-600">Browse through our curated list of top-rated event professionals</p>
           </div>
 
-          {/* Filters */}
-          <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <Filter className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold text-gray-900">Filters</h3>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <select 
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                <option value="">Select Category</option>
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+          <FilterSection
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            selectedLocation={selectedLocation}
+            setSelectedLocation={setSelectedLocation}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            rating={rating}
+            setRating={setRating}
+          />
 
-              <select 
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                <option value="">Select Location</option>
-                {locations.map(loc => (
-                  <option key={loc} value={loc}>{loc}</option>
-                ))}
-              </select>
-
-              <select 
-                value={priceRange}
-                onChange={(e) => setPriceRange(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                <option value="">Price Range</option>
-                <option value="budget">Budget (Under ₹25K)</option>
-                <option value="medium">Medium (₹25K - ₹75K)</option>
-                <option value="premium">Premium (Above ₹75K)</option>
-              </select>
-
-              <select 
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                <option value="">Rating</option>
-                <option value="4.5">4.5+ Stars</option>
-                <option value="4.0">4.0+ Stars</option>
-                <option value="3.5">3.5+ Stars</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Vendor Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVendors.map((vendor) => (
-              <Card 
-                key={vendor.id} 
-                className="group cursor-pointer hover:shadow-lg transition-all duration-300 bg-white"
-                onClick={() => navigate(`/vendor/${vendor.id}`)}
-              >
-                <CardContent className="p-0">
-                  <div className="relative">
-                    <img 
-                      src={vendor.image}
-                      alt={vendor.name}
-                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    {vendor.featured && (
-                      <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Featured
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-800 transition-colors">
-                        {vendor.name}
-                      </h3>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">{vendor.rating}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                      <span className="bg-primary-700 text-white px-2 py-1 rounded text-xs font-medium">
-                        {vendor.category}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {vendor.location}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
-                      <Users className="h-4 w-4" />
-                      <span>{vendor.reviews} reviews</span>
-                    </div>
-                    
-                    <p className="text-green-700 font-bold text-lg mb-4">{vendor.price}</p>
-                    
-                    <Button className="w-full bg-primary-700 hover:bg-primary-800">
-                      View Details
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <VendorCard key={vendor.id} vendor={vendor} />
             ))}
           </div>
         </div>
