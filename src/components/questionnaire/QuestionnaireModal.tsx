@@ -6,17 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import type { Tables } from '@/integrations/supabase/types';
 
-interface Question {
-  id: string;
-  question_text: string;
-  question_type: 'true_false' | 'multiple_choice' | 'textarea';
-  options?: string[];
-  is_mandatory: boolean;
-}
+type Question = Tables<'questions'>;
 
 interface QuestionnaireModalProps {
   isOpen: boolean;
@@ -159,7 +153,9 @@ const QuestionnaireModal = ({ isOpen, onClose, vendorCategories, onComplete }: Q
   };
 
   const renderQuestion = (question: Question) => {
-    switch (question.question_type) {
+    const questionType = question.question_type as 'true_false' | 'multiple_choice' | 'textarea';
+    
+    switch (questionType) {
       case 'true_false':
         return (
           <RadioGroup
@@ -178,12 +174,13 @@ const QuestionnaireModal = ({ isOpen, onClose, vendorCategories, onComplete }: Q
         );
 
       case 'multiple_choice':
+        const options = question.options as string[] || [];
         return (
           <RadioGroup
             value={responses[question.id] || ''}
             onValueChange={(value) => handleResponseChange(question.id, value)}
           >
-            {question.options?.map((option, index) => (
+            {options.map((option, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <RadioGroupItem value={option} id={`${question.id}-${index}`} />
                 <Label htmlFor={`${question.id}-${index}`}>{option}</Label>
