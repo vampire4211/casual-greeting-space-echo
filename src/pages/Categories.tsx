@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FilterSection from './categories/components/FilterSection';
 import VendorCard from './categories/components/VendorCard';
 
 const Categories = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [priceRange, setPriceRange] = useState('');
@@ -97,6 +99,10 @@ const Categories = () => {
            (selectedLocation === '' || selectedLocation === 'All' || vendor.location === selectedLocation);
   });
 
+  const handleVendorClick = (vendorId: string) => {
+    navigate(`/vendors/${vendorId}`);
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
       <Navbar />
@@ -121,18 +127,23 @@ const Categories = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVendors.map((vendor) => (
-              <VendorCard 
-                key={vendor.id} 
-                id={vendor.id}
-                name={vendor.name}
-                category={vendor.category}
-                location={vendor.location}
-                rating={vendor.rating}
-                reviews={vendor.reviews}
-                image={vendor.image}
-                description={vendor.description}
-                whatsappNumber={vendor.whatsappNumber}
-              />
+              <div 
+                key={vendor.id}
+                onClick={() => handleVendorClick(vendor.id)}
+                className="cursor-pointer hover:scale-105 transition-transform duration-200"
+              >
+                <VendorCard 
+                  id={vendor.id}
+                  name={vendor.name}
+                  category={vendor.category}
+                  location={vendor.location}
+                  rating={vendor.rating}
+                  reviews={vendor.reviews}
+                  image={vendor.image}
+                  description={vendor.description}
+                  whatsappNumber={vendor.whatsappNumber}
+                />
+              </div>
             ))}
           </div>
         </div>
