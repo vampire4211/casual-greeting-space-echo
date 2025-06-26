@@ -1,80 +1,70 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Star, MapPin, Users } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { MapPin, Star, Users } from 'lucide-react';
+import BookingButton from '@/components/booking/BookingButton';
 
-interface Vendor {
-  id: number;
+interface VendorCardProps {
+  id: string;
   name: string;
   category: string;
   location: string;
   rating: number;
   reviews: number;
-  price: string;
   image: string;
-  featured: boolean;
+  description: string;
+  whatsappNumber?: string;
 }
 
-interface VendorCardProps {
-  vendor: Vendor;
-}
-
-const VendorCard = ({ vendor }: VendorCardProps) => {
-  const navigate = useNavigate();
-
+const VendorCard = ({ 
+  id, 
+  name, 
+  category, 
+  location, 
+  rating, 
+  reviews, 
+  image, 
+  description,
+  whatsappNumber 
+}: VendorCardProps) => {
   return (
-    <Card 
-      className="group cursor-pointer hover:shadow-lg transition-all duration-300 bg-white"
-      onClick={() => navigate(`/vendor/${vendor.id}`)}
-    >
-      <CardContent className="p-0">
-        <div className="relative">
-          <img 
-            src={vendor.image}
-            alt={vendor.name}
-            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          {vendor.featured && (
-            <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
-              Featured
-            </div>
-          )}
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="aspect-video overflow-hidden">
+        <img 
+          src={image} 
+          alt={name}
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+        />
+      </div>
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-lg">{name}</CardTitle>
+          <Badge variant="secondary">{category}</Badge>
         </div>
-        
-        <div className="p-6">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-800 transition-colors">
-              {vendor.name}
-            </h3>
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-medium">{vendor.rating}</span>
-            </div>
+        <div className="flex items-center gap-4 text-sm text-gray-600">
+          <div className="flex items-center gap-1">
+            <MapPin className="w-4 h-4" />
+            {location}
           </div>
-          
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-            <span className="bg-primary-700 text-white px-2 py-1 rounded text-xs font-medium">
-              {vendor.category}
-            </span>
-            <div className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              {vendor.location}
-            </div>
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+            {rating}
           </div>
-          
-          <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
-            <Users className="h-4 w-4" />
-            <span>{vendor.reviews} reviews</span>
+          <div className="flex items-center gap-1">
+            <Users className="w-4 h-4" />
+            {reviews} reviews
           </div>
-          
-          <p className="text-green-700 font-bold text-lg mb-4">{vendor.price}</p>
-          
-          <Button className="w-full bg-primary-700 hover:bg-primary-800">
-            View Details
-          </Button>
         </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+        <BookingButton 
+          vendorId={id}
+          vendorName={name}
+          category={category}
+          whatsappNumber={whatsappNumber}
+        />
       </CardContent>
     </Card>
   );

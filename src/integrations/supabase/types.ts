@@ -9,6 +9,99 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      booking_interactions: {
+        Row: {
+          category: string | null
+          clicked_at: string | null
+          customer_id: string | null
+          customer_response: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          responded_at: string | null
+          vendor_id: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          category?: string | null
+          clicked_at?: string | null
+          customer_id?: string | null
+          customer_response?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          responded_at?: string | null
+          vendor_id?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          category?: string | null
+          clicked_at?: string | null
+          customer_id?: string | null
+          customer_response?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          responded_at?: string | null
+          vendor_id?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_interactions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_interactions_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      carousel_images: {
+        Row: {
+          alt_text: string | null
+          category: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          image_url: string
+          is_active: boolean | null
+          subtitle: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          category?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          category?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          subtitle?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null
@@ -54,6 +147,42 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_initiations: {
+        Row: {
+          customer_id: string | null
+          id: string
+          initiated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          customer_id?: string | null
+          id?: string
+          initiated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          customer_id?: string | null
+          id?: string
+          initiated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_initiations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_initiations_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           conversation_id: string | null
@@ -85,6 +214,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      customer_profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          location: string | null
+          phone_number: string | null
+          preferences: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          location?: string | null
+          phone_number?: string | null
+          preferences?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          location?: string | null
+          phone_number?: string | null
+          preferences?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hero_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          image_url: string
+          is_active: boolean | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -226,12 +418,54 @@ export type Database = {
           },
         ]
       }
+      vendor_visits: {
+        Row: {
+          customer_id: string | null
+          id: string
+          page_type: string | null
+          vendor_id: string | null
+          visited_at: string | null
+        }
+        Insert: {
+          customer_id?: string | null
+          id?: string
+          page_type?: string | null
+          vendor_id?: string | null
+          visited_at?: string | null
+        }
+        Update: {
+          customer_id?: string | null
+          id?: string
+          page_type?: string | null
+          vendor_id?: string | null
+          visited_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_visits_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_visits_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      expire_booking_interactions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
