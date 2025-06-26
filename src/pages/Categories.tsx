@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -12,7 +13,7 @@ const Categories = () => {
 
   const vendors = [
     {
-      id: 1,
+      id: "1",
       name: "Royal Photography Studio",
       category: "Photography",
       location: "Mumbai",
@@ -20,10 +21,12 @@ const Categories = () => {
       reviews: 125,
       price: "₹25,000 - ₹50,000",
       image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=300&fit=crop",
-      featured: true
+      description: "Professional wedding and event photography with creative storytelling approach.",
+      featured: true,
+      whatsappNumber: "+91-9876543210"
     },
     {
-      id: 2,
+      id: "2",
       name: "Delicious Catering Co.",
       category: "Catering",
       location: "Delhi",
@@ -31,10 +34,12 @@ const Categories = () => {
       reviews: 89,
       price: "₹500 - ₹1,200 per plate",
       image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
-      featured: false
+      description: "Exquisite catering services offering diverse cuisines for all types of events.",
+      featured: false,
+      whatsappNumber: "+91-9876543211"
     },
     {
-      id: 3,
+      id: "3",
       name: "Grand Palace Venues",
       category: "Venue",
       location: "Bangalore",
@@ -42,10 +47,12 @@ const Categories = () => {
       reviews: 67,
       price: "₹1,00,000 - ₹3,00,000",
       image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=300&fit=crop",
-      featured: true
+      description: "Luxurious event venues with elegant décor and world-class amenities.",
+      featured: true,
+      whatsappNumber: "+91-9876543212"
     },
     {
-      id: 4,
+      id: "4",
       name: "Elegant Decor Solutions",
       category: "Decor",
       location: "Chennai",
@@ -53,10 +60,12 @@ const Categories = () => {
       reviews: 93,
       price: "₹15,000 - ₹75,000",
       image: "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop",
-      featured: false
+      description: "Creative decoration services transforming venues into magical spaces.",
+      featured: false,
+      whatsappNumber: "+91-9876543213"
     },
     {
-      id: 5,
+      id: "5",
       name: "Melody Music Band",
       category: "Music",
       location: "Pune",
@@ -64,10 +73,12 @@ const Categories = () => {
       reviews: 45,
       price: "₹20,000 - ₹80,000",
       image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-      featured: false
+      description: "Live music performances and DJ services for unforgettable celebrations.",
+      featured: false,
+      whatsappNumber: "+91-9876543214"
     },
     {
-      id: 6,
+      id: "6",
       name: "Glamour Makeup Studio",
       category: "Makeup",
       location: "Hyderabad",
@@ -75,7 +86,9 @@ const Categories = () => {
       reviews: 112,
       price: "₹8,000 - ₹25,000",
       image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop",
-      featured: true
+      description: "Professional makeup and styling services for brides and special occasions.",
+      featured: true,
+      whatsappNumber: "+91-9876543215"
     }
   ];
 
@@ -108,7 +121,18 @@ const Categories = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVendors.map((vendor) => (
-              <VendorCard key={vendor.id} vendor={vendor} />
+              <VendorCard 
+                key={vendor.id} 
+                id={vendor.id}
+                name={vendor.name}
+                category={vendor.category}
+                location={vendor.location}
+                rating={vendor.rating}
+                reviews={vendor.reviews}
+                image={vendor.image}
+                description={vendor.description}
+                whatsappNumber={vendor.whatsappNumber}
+              />
             ))}
           </div>
         </div>
