@@ -13,11 +13,13 @@ const HomePage = () => {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
       <Navbar />
-      <HeroSection />
-      <TrendingCarousel />
-      <PopularCategories />
-      <Testimonials />
-      <CTASection />
+      <main className="w-full overflow-x-hidden">
+        <HeroSection />
+        <TrendingCarousel />
+        <PopularCategories />
+        <Testimonials />
+        <CTASection />
+      </main>
       <ChatIcon />
       <Footer />
     </div>

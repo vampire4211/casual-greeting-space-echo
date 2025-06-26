@@ -1,20 +1,70 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Star, Upload, MessageCircle, TrendingUp, CreditCard, Menu, X } from 'lucide-react';
+import { Star, Upload, MessageCircle, TrendingUp, CreditCard, Menu, X, HelpCircle } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import QuestionnaireModal from '@/components/questionnaire/QuestionnaireModal';
+import { useToast } from '@/hooks/use-toast';
 
 const VendorDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const profileCompletion = 75;
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [vendorProfile, setVendorProfile] = useState<any>(null);
+  const [profileCompletion, setProfileCompletion] = useState(75);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (user) {
+      fetchVendorProfile();
+    }
+  }, [user]);
+
+  // Auto-collapse sidebar on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSidebarCollapsed(true);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const fetchVendorProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('vendor_profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (error) throw error;
+      setVendorProfile(data);
+      setProfileCompletion(data.profile_completion || 75);
+    } catch (error) {
+      console.error('Error fetching vendor profile:', error);
+    }
+  };
+
+  const handleQuestionnaireComplete = () => {
+    toast({
+      title: "Questionnaire Completed",
+      description: "Your profile has been updated with your responses.",
+    });
+    fetchVendorProfile();
+  };
 
   const vendorData = {
-    name: "Royal Photography Studio",
-    categories: ["Photography", "Videography"],
+    name: vendorProfile?.business_name || "Royal Photography Studio",
+    categories: vendorProfile?.categories || ["Photography", "Videography"],
     rating: 4.8,
     priceRange: "₹25,000 - ₹50,000",
     experience: "5 years",
@@ -25,15 +75,15 @@ const VendorDashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      <div className="pt-20 flex">
+      <div className="pt-20 flex flex-col md:flex-row">
         {/* Sidebar */}
         <div className={`bg-white shadow-lg transition-all duration-300 ${
-          sidebarCollapsed ? 'w-16' : 'w-80'
-        } relative`}>
-          <div className="p-6 border-b">
+          sidebarCollapsed ? 'w-full md:w-16' : 'w-full md:w-80'
+        } relative md:sticky md:top-20 md:h-[calc(100vh-5rem)] overflow-y-auto`}>
+          <div className="p-4 md:p-6 border-b">
             <button 
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100"
+              className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 md:block"
             >
               {sidebarCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
             </button>
@@ -44,10 +94,10 @@ const VendorDashboard = () => {
                   <img 
                     src={vendorData.profileImage}
                     alt="Profile"
-                    className="w-16 h-16 rounded-full object-cover"
+                    className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover"
                   />
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{vendorData.name}</h3>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900 truncate">{vendorData.name}</h3>
                     <div className="flex items-center gap-1 mt-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm">{vendorData.rating}</span>
@@ -64,7 +114,7 @@ const VendorDashboard = () => {
                     ))}
                   </div>
                   
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-600 space-y-1">
                     <p><strong>Price:</strong> {vendorData.priceRange}</p>
                     <p><strong>Experience:</strong> {vendorData.experience}</p>
                   </div>
@@ -83,33 +133,33 @@ const VendorDashboard = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-4 md:p-6">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Vendor Dashboard</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Vendor Dashboard</h1>
             <p className="text-gray-600">Manage your business profile and track performance</p>
           </div>
 
           <Tabs defaultValue="edits" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="edits" className="flex items-center gap-2">
-                <Upload className="h-4 w-4" />
-                Edits
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-1">
+              <TabsTrigger value="edits" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+                <Upload className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Edits</span>
               </TabsTrigger>
-              <TabsTrigger value="reviews" className="flex items-center gap-2">
-                <Star className="h-4 w-4" />
-                Reviews
+              <TabsTrigger value="reviews" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+                <Star className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Reviews</span>
               </TabsTrigger>
-              <TabsTrigger value="chat" className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" />
-                Chat
+              <TabsTrigger value="chat" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+                <MessageCircle className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Chat</span>
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Analytics
+              <TabsTrigger value="analytics" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+                <TrendingUp className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Analytics</span>
               </TabsTrigger>
-              <TabsTrigger value="subscription" className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4" />
-                Subscription
+              <TabsTrigger value="subscription" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+                <CreditCard className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Subscription</span>
               </TabsTrigger>
             </TabsList>
 
@@ -119,16 +169,40 @@ const VendorDashboard = () => {
                   <CardTitle>Manage Your Portfolio</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
                     {[1,2,3,4,5,6].map(i => (
                       <div key={i} className="aspect-square bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
                         <div className="text-center">
-                          <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500">Upload Image</p>
+                          <Upload className="h-6 w-6 md:h-8 md:w-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-xs md:text-sm text-gray-500">Upload Image</p>
                         </div>
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Questionnaire Section */}
+                  <div className="mt-6 pt-6 border-t">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                      <div className="flex items-start gap-3">
+                        <HelpCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <h4 className="font-medium text-blue-900 mb-2">Complete Your Profile</h4>
+                          <p className="text-sm text-blue-700 mb-3">
+                            Answer 20 carefully selected questions to help customers understand your services better. 
+                            This includes 10 essential questions and category-specific questions based on your expertise.
+                          </p>
+                          <Button 
+                            onClick={() => setShowQuestionnaire(true)}
+                            className="bg-blue-600 hover:bg-blue-700"
+                            size="sm"
+                          >
+                            Take Random 20 Questions
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <h4 className="font-medium text-blue-900 mb-2">Upload Guidelines</h4>
                     <ul className="text-sm text-blue-700 space-y-1">
@@ -155,7 +229,7 @@ const VendorDashboard = () => {
                       { name: "Anita Patel", rating: 5, comment: "Amazing photography skills!", date: "2 weeks ago" }
                     ].map((review, index) => (
                       <div key={index} className="border-b pb-4 last:border-b-0">
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                           <div>
                             <h4 className="font-medium">{review.name}</h4>
                             <div className="flex items-center gap-1">
@@ -169,7 +243,7 @@ const VendorDashboard = () => {
                           </div>
                           <span className="text-sm text-gray-500">{review.date}</span>
                         </div>
-                        <p className="text-gray-600">{review.comment}</p>
+                        <p className="text-gray-600 text-sm">{review.comment}</p>
                       </div>
                     ))}
                   </div>
@@ -193,48 +267,48 @@ const VendorDashboard = () => {
             </TabsContent>
 
             <TabsContent value="analytics">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
                 <Card>
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 md:p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-gray-600">Profile Views</p>
-                        <p className="text-2xl font-bold">1,234</p>
+                        <p className="text-xl md:text-2xl font-bold">1,234</p>
                       </div>
-                      <TrendingUp className="h-8 w-8 text-green-500" />
+                      <TrendingUp className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
                     </div>
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 md:p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-gray-600">Inquiries</p>
-                        <p className="text-2xl font-bold">56</p>
+                        <p className="text-xl md:text-2xl font-bold">56</p>
                       </div>
-                      <MessageCircle className="h-8 w-8 text-blue-500" />
+                      <MessageCircle className="h-6 w-6 md:h-8 md:w-8 text-blue-500" />
                     </div>
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 md:p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-gray-600">Bookings</p>
-                        <p className="text-2xl font-bold">23</p>
+                        <p className="text-xl md:text-2xl font-bold">23</p>
                       </div>
-                      <CreditCard className="h-8 w-8 text-purple-500" />
+                      <CreditCard className="h-6 w-6 md:h-8 md:w-8 text-purple-500" />
                     </div>
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 md:p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-gray-600">Rating</p>
-                        <p className="text-2xl font-bold">4.8</p>
+                        <p className="text-xl md:text-2xl font-bold">4.8</p>
                       </div>
-                      <Star className="h-8 w-8 text-yellow-500" />
+                      <Star className="h-6 w-6 md:h-8 md:w-8 text-yellow-500" />
                     </div>
                   </CardContent>
                 </Card>
@@ -245,7 +319,7 @@ const VendorDashboard = () => {
                   <CardTitle>Performance Analytics</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <div className="h-48 md:h-64 bg-gray-100 rounded-lg flex items-center justify-center">
                     <p className="text-gray-500">Charts and analytics will be displayed here</p>
                   </div>
                 </CardContent>
@@ -253,12 +327,12 @@ const VendorDashboard = () => {
             </TabsContent>
 
             <TabsContent value="subscription">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="border-2 border-gray-200">
                   <CardHeader>
                     <CardTitle className="text-center">Basic</CardTitle>
                     <div className="text-center">
-                      <span className="text-3xl font-bold">₹5,500</span>
+                      <span className="text-2xl md:text-3xl font-bold">₹5,500</span>
                       <span className="text-gray-500">/month</span>
                     </div>
                   </CardHeader>
@@ -280,7 +354,7 @@ const VendorDashboard = () => {
                   <CardHeader>
                     <CardTitle className="text-center">Premium</CardTitle>
                     <div className="text-center">
-                      <span className="text-3xl font-bold">₹7,000</span>
+                      <span className="text-2xl md:text-3xl font-bold">₹7,000</span>
                       <span className="text-gray-500">/month</span>
                     </div>
                   </CardHeader>
@@ -302,7 +376,7 @@ const VendorDashboard = () => {
                   <CardHeader>
                     <CardTitle className="text-center">Extreme</CardTitle>
                     <div className="text-center">
-                      <span className="text-3xl font-bold">₹8,500</span>
+                      <span className="text-2xl md:text-3xl font-bold">₹8,500</span>
                       <span className="text-gray-500">/month</span>
                     </div>
                   </CardHeader>
@@ -324,6 +398,13 @@ const VendorDashboard = () => {
           </Tabs>
         </div>
       </div>
+
+      <QuestionnaireModal
+        isOpen={showQuestionnaire}
+        onClose={() => setShowQuestionnaire(false)}
+        vendorCategories={vendorData.categories}
+        onComplete={handleQuestionnaireComplete}
+      />
     </div>
   );
 };
