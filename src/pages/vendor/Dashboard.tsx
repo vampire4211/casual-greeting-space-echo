@@ -16,7 +16,7 @@ import { BarChart, Users, MessageSquare, Star, Edit, FileText, TrendingUp } from
 const VendorDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [vendorProfile, setVendorProfile] = useState<any>(null);
+  const [vendorProfile, setVendorProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [stats, setStats] = useState({
