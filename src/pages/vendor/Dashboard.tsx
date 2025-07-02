@@ -6,23 +6,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Star, Upload, MessageCircle, TrendingUp, CreditCard, Menu, X, HelpCircle } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-
 import { useToast } from '@/hooks/use-toast';
 
 const VendorDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [vendorProfile, setVendorProfile] = useState<any>(null);
   const [profileCompletion, setProfileCompletion] = useState(75);
-  const { user } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user) {
-      fetchVendorProfile();
-    }
-  }, [user]);
+    fetchVendorProfile();
+  }, []);
 
   // Auto-collapse sidebar on mobile
   useEffect(() => {

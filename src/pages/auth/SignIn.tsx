@@ -5,15 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
 import SignInForm from './components/SignInForm';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
-import { useEffect } from 'react';
 
 const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
   const [userType, setUserType] = useState('customer');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,47 +18,26 @@ const SignIn = () => {
     password: ''
   });
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (error) {
+      // Mock authentication
+      setTimeout(() => {
         toast({
-          title: "Sign In Failed",
-          description: error.message,
-          variant: "destructive",
+          title: "Welcome back!",
+          description: "You have been signed in successfully.",
         });
-        return;
-      }
-
-      // For demo purposes, redirect to vendor dashboard
-      navigate('/vendor/dashboard');
-
-      toast({
-        title: "Welcome back!",
-        description: "You have been signed in successfully.",
-      });
+        navigate('/vendor/dashboard');
+        setLoading(false);
+      }, 1000);
     } catch (error) {
-      console.error('Sign in error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   };
