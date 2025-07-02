@@ -16,14 +16,18 @@ import { BarChart, Users, MessageSquare, Star, Edit, FileText, TrendingUp } from
 const VendorDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [vendorProfile, setVendorProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [vendorProfile, setVendorProfile] = useState({
+    business_name: 'Demo Vendor',
+    categories: ['Photography', 'Catering'],
+    profile_completion: 75
+  });
+  const [loading, setLoading] = useState(false);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [stats, setStats] = useState({
-    visits: 0,
-    chats: 0,
-    bookings: 0,
-    responses: 0
+    visits: 125,
+    chats: 34,
+    bookings: 18,
+    responses: 12
   });
 
   useEffect(() => {
