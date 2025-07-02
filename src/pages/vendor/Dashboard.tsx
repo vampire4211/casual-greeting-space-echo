@@ -72,7 +72,7 @@ const VendorDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
       <Navbar />
       
       <div className="pt-20 flex flex-col md:flex-row">
