@@ -77,7 +77,7 @@ const VendorDashboard = () => {
       
       <div className="pt-20 flex flex-col md:flex-row">
         {/* Sidebar */}
-        <div className={`shadow-lg transition-all duration-300 ${
+        <div className={`shadow-xl transition-all duration-300 ${
           sidebarCollapsed ? 'w-full md:w-16' : 'w-full md:w-80'
         } relative md:sticky md:top-20 md:h-[calc(100vh-5rem)] overflow-y-auto`} style={{ backgroundColor: '#F0EADF' }}>
           <div className="p-4 md:p-6 border-b">
