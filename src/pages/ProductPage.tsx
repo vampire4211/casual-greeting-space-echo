@@ -64,75 +64,18 @@ const ProductPage = () => {
   }, [id]);
 
   const trackVendorVisit = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: customerProfile } = await supabase
-        .from('customer_profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (customerProfile) {
-        await supabase
-          .from('vendor_visits')
-          .upsert({
-            customer_id: customerProfile.id,
-            vendor_id: id,
-            page_type: 'profile'
-          });
-      }
-    } catch (error) {
-      console.error('Error tracking vendor visit:', error);
-    }
+    // Demo mode - visit tracking will be implemented when database is configured
+    console.log('Demo: Vendor visit tracked for vendor', id);
   };
 
   const handleChatNow = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Please sign in",
-          description: "You need to be signed in to start a chat.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data: customerProfile } = await supabase
-        .from('customer_profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!customerProfile) {
-        toast({
-          title: "Profile not found",
-          description: "Please complete your profile first.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Record chat initiation
-      await supabase
-        .from('chat_initiations')
-        .upsert({
-          customer_id: customerProfile.id,
-          vendor_id: id
-        });
-
-      // Navigate to chat page with vendor pre-loaded
-      navigate(`/chat?vendor=${id}&message=${encodeURIComponent("Hi, can I get more information?")}`);
-    } catch (error) {
-      console.error('Error initiating chat:', error);
-      toast({
-        title: "Error",
-        description: "Failed to start chat. Please try again.",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Demo Mode",
+      description: "Chat functionality will be available when database is configured.",
+    });
+    
+    // Navigate to chat page with vendor pre-loaded
+    navigate(`/chat?vendor=${id}&message=${encodeURIComponent("Hi, can I get more information?")}`);
   };
 
   if (loading) {

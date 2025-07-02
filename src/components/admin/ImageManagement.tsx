@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,153 +7,95 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2, Save } from 'lucide-react';
-import type { Tables } from '@/integrations/supabase/types';
+import { Plus, Edit, Trash2, Save, Image } from 'lucide-react';
 
-type HeroImage = Tables<'hero_images'>;
-type CarouselImage = Tables<'carousel_images'>;
+interface HeroImage {
+  id: string;
+  title: string;
+  image_url: string;
+  alt_text: string;
+  is_active: boolean;
+  display_order: number;
+}
+
+interface CarouselImage {
+  id: string;
+  title: string;
+  subtitle: string;
+  image_url: string;
+  alt_text: string;
+  category: string;
+  is_active: boolean;
+  display_order: number;
+}
 
 const ImageManagement = () => {
-  const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
-  const [carouselImages, setCarouselImages] = useState<CarouselImage[]>([]);
+  const [heroImages] = useState<HeroImage[]>([
+    { 
+      id: '1', 
+      title: 'Wedding Celebration', 
+      image_url: '/placeholder.svg', 
+      alt_text: 'Beautiful wedding ceremony', 
+      is_active: true,
+      display_order: 1
+    },
+    { 
+      id: '2', 
+      title: 'Corporate Event', 
+      image_url: '/placeholder.svg', 
+      alt_text: 'Professional business meeting', 
+      is_active: true,
+      display_order: 2
+    }
+  ]);
+  
+  const [carouselImages] = useState<CarouselImage[]>([
+    { 
+      id: '1', 
+      title: 'Photography', 
+      subtitle: 'Capture your precious moments', 
+      image_url: '/placeholder.svg', 
+      alt_text: 'Professional photography service',
+      category: 'Photography', 
+      is_active: true,
+      display_order: 1
+    },
+    { 
+      id: '2', 
+      title: 'Catering', 
+      subtitle: 'Delicious food for every occasion', 
+      image_url: '/placeholder.svg', 
+      alt_text: 'Catering service display',
+      category: 'Catering', 
+      is_active: true,
+      display_order: 2
+    }
+  ]);
+  
   const [showHeroModal, setShowHeroModal] = useState(false);
   const [showCarouselModal, setShowCarouselModal] = useState(false);
-  const [editingHero, setEditingHero] = useState<HeroImage | null>(null);
-  const [editingCarousel, setEditingCarousel] = useState<CarouselImage | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchImages();
-  }, []);
-
-  const fetchImages = async () => {
-    try {
-      const [heroResponse, carouselResponse] = await Promise.all([
-        supabase.from('hero_images').select('*').order('display_order'),
-        supabase.from('carousel_images').select('*').order('display_order')
-      ]);
-
-      if (heroResponse.data) setHeroImages(heroResponse.data);
-      if (carouselResponse.data) setCarouselImages(carouselResponse.data);
-    } catch (error) {
-      console.error('Error fetching images:', error);
-    }
-  };
-
-  const handleSaveHeroImage = async (formData: FormData) => {
-    try {
-      const imageData = {
-        title: formData.get('title') as string,
-        image_url: formData.get('image_url') as string,
-        alt_text: formData.get('alt_text') as string,
-        is_active: formData.get('is_active') === 'true',
-        display_order: parseInt(formData.get('display_order') as string) || 0
-      };
-
-      if (editingHero) {
-        const { error } = await supabase
-          .from('hero_images')
-          .update(imageData)
-          .eq('id', editingHero.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('hero_images')
-          .insert(imageData);
-        if (error) throw error;
-      }
-
-      toast({
-        title: "Success",
-        description: `Hero image ${editingHero ? 'updated' : 'created'} successfully!`,
-      });
-
-      fetchImages();
-      setShowHeroModal(false);
-      setEditingHero(null);
-    } catch (error) {
-      console.error('Error saving hero image:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save hero image. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleSaveCarouselImage = async (formData: FormData) => {
-    try {
-      const imageData = {
-        title: formData.get('title') as string,
-        subtitle: formData.get('subtitle') as string,
-        image_url: formData.get('image_url') as string,
-        alt_text: formData.get('alt_text') as string,
-        category: formData.get('category') as string,
-        is_active: formData.get('is_active') === 'true',
-        display_order: parseInt(formData.get('display_order') as string) || 0
-      };
-
-      if (editingCarousel) {
-        const { error } = await supabase
-          .from('carousel_images')
-          .update(imageData)
-          .eq('id', editingCarousel.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('carousel_images')
-          .insert(imageData);
-        if (error) throw error;
-      }
-
-      toast({
-        title: "Success",
-        description: `Carousel image ${editingCarousel ? 'updated' : 'created'} successfully!`,
-      });
-
-      fetchImages();
-      setShowCarouselModal(false);
-      setEditingCarousel(null);
-    } catch (error) {
-      console.error('Error saving carousel image:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save carousel image. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDeleteImage = async (type: 'hero' | 'carousel', id: string) => {
-    try {
-      const tableName = type === 'hero' ? 'hero_images' : 'carousel_images';
-      const { error } = await supabase
-        .from(tableName)
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Image deleted successfully!",
-      });
-
-      fetchImages();
-    } catch (error) {
-      console.error('Error deleting image:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete image. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleAction = (action: string) => {
+    toast({
+      title: "Demo Mode",
+      description: `${action} functionality will be available when database tables are created.`,
+    });
   };
 
   return (
     <div className="space-y-6">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center gap-2">
+          <Image className="w-5 h-5 text-blue-600" />
+          <span className="text-blue-800 font-medium">Demo Mode</span>
+        </div>
+        <p className="text-blue-700 text-sm mt-1">
+          Image management is currently in demo mode. Database tables need to be created for full functionality.
+        </p>
+      </div>
+
       <Tabs defaultValue="hero" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="hero">Hero Images</TabsTrigger>
@@ -164,7 +105,7 @@ const ImageManagement = () => {
         <TabsContent value="hero" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold">Hero Section Images</h3>
-            <Button onClick={() => setShowHeroModal(true)}>
+            <Button onClick={() => handleAction('Add Hero Image')}>
               <Plus className="w-4 h-4 mr-2" />
               Add Hero Image
             </Button>
@@ -190,17 +131,14 @@ const ImageManagement = () => {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => {
-                          setEditingHero(image);
-                          setShowHeroModal(true);
-                        }}
+                        onClick={() => handleAction('Edit Hero Image')}
                       >
                         <Edit className="w-3 h-3" />
                       </Button>
                       <Button 
                         size="sm" 
                         variant="destructive"
-                        onClick={() => handleDeleteImage('hero', image.id)}
+                        onClick={() => handleAction('Delete Hero Image')}
                       >
                         <Trash2 className="w-3 h-3" />
                       </Button>
@@ -215,7 +153,7 @@ const ImageManagement = () => {
         <TabsContent value="carousel" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold">Carousel Images</h3>
-            <Button onClick={() => setShowCarouselModal(true)}>
+            <Button onClick={() => handleAction('Add Carousel Image')}>
               <Plus className="w-4 h-4 mr-2" />
               Add Carousel Image
             </Button>
@@ -246,17 +184,14 @@ const ImageManagement = () => {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => {
-                        setEditingCarousel(image);
-                        setShowCarouselModal(true);
-                      }}
+                      onClick={() => handleAction('Edit Carousel Image')}
                     >
                       <Edit className="w-3 h-3" />
                     </Button>
                     <Button 
                       size="sm" 
                       variant="destructive"
-                      onClick={() => handleDeleteImage('carousel', image.id)}
+                      onClick={() => handleAction('Delete Carousel Image')}
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
@@ -267,146 +202,6 @@ const ImageManagement = () => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Hero Image Modal */}
-      <Dialog open={showHeroModal} onOpenChange={setShowHeroModal}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{editingHero ? 'Edit' : 'Add'} Hero Image</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            handleSaveHeroImage(new FormData(e.currentTarget));
-          }} className="space-y-4">
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <Input 
-                id="title" 
-                name="title" 
-                defaultValue={editingHero?.title || ''} 
-                required 
-              />
-            </div>
-            <div>
-              <Label htmlFor="image_url">Image URL</Label>
-              <Input 
-                id="image_url" 
-                name="image_url" 
-                type="url"
-                defaultValue={editingHero?.image_url || ''} 
-                required 
-              />
-            </div>
-            <div>
-              <Label htmlFor="alt_text">Alt Text</Label>
-              <Input 
-                id="alt_text" 
-                name="alt_text" 
-                defaultValue={editingHero?.alt_text || ''} 
-              />
-            </div>
-            <div>
-              <Label htmlFor="display_order">Display Order</Label>
-              <Input 
-                id="display_order" 
-                name="display_order" 
-                type="number"
-                defaultValue={editingHero?.display_order || 0} 
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch 
-                id="is_active" 
-                name="is_active"
-                defaultChecked={editingHero?.is_active ?? true}
-              />
-              <Label htmlFor="is_active">Active</Label>
-            </div>
-            <Button type="submit" className="w-full">
-              <Save className="w-4 h-4 mr-2" />
-              Save Hero Image
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Carousel Image Modal */}
-      <Dialog open={showCarouselModal} onOpenChange={setShowCarouselModal}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{editingCarousel ? 'Edit' : 'Add'} Carousel Image</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            handleSaveCarouselImage(new FormData(e.currentTarget));
-          }} className="space-y-4">
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <Input 
-                id="title" 
-                name="title" 
-                defaultValue={editingCarousel?.title || ''} 
-                required 
-              />
-            </div>
-            <div>
-              <Label htmlFor="subtitle">Subtitle</Label>
-              <Input 
-                id="subtitle" 
-                name="subtitle" 
-                defaultValue={editingCarousel?.subtitle || ''} 
-              />
-            </div>
-            <div>
-              <Label htmlFor="image_url">Image URL</Label>
-              <Input 
-                id="image_url" 
-                name="image_url" 
-                type="url"
-                defaultValue={editingCarousel?.image_url || ''} 
-                required 
-              />
-            </div>
-            <div>
-              <Label htmlFor="alt_text">Alt Text</Label>
-              <Input 
-                id="alt_text" 
-                name="alt_text" 
-                defaultValue={editingCarousel?.alt_text || ''} 
-              />
-            </div>
-            <div>
-              <Label htmlFor="category">Category</Label>
-              <Input 
-                id="category" 
-                name="category" 
-                defaultValue={editingCarousel?.category || ''} 
-              />
-            </div>
-            <div>
-              <Label htmlFor="display_order">Display Order</Label>
-              <Input 
-                id="display_order" 
-                name="display_order" 
-                type="number"
-                defaultValue={editingCarousel?.display_order || 0} 
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch 
-                id="is_active" 
-                name="is_active"
-                defaultChecked={editingCarousel?.is_active ?? true}
-              />
-              <Label htmlFor="is_active">Active</Label>
-            </div>
-            <Button type="submit" className="w-full">
-              <Save className="w-4 h-4 mr-2" />
-              Save Carousel Image
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

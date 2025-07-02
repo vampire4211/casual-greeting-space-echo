@@ -48,24 +48,8 @@ const SignIn = () => {
         return;
       }
 
-      // Check user type and redirect accordingly
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('user_type')
-        .eq('user_id', data.user.id)
-        .single();
-
-      if (profileError) {
-        console.error('Error fetching profile:', profileError);
-        navigate('/');
-        return;
-      }
-
-      if (profile.user_type === 'vendor') {
-        navigate('/vendor/dashboard');
-      } else {
-        navigate('/');
-      }
+      // Demo mode - always redirect to home
+      navigate('/');
 
       toast({
         title: "Welcome back!",

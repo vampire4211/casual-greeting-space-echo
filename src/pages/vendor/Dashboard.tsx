@@ -38,80 +38,38 @@ const VendorDashboard = () => {
   }, [user]);
 
   const fetchVendorProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('vendor_profiles')
-        .select('*')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (error) throw error;
-      setVendorProfile(data);
-    } catch (error) {
-      console.error('Error fetching vendor profile:', error);
-    } finally {
-      setLoading(false);
-    }
+    // Demo mode - using static profile data
+    setVendorProfile({
+      business_name: 'Demo Vendor Business',
+      categories: ['Photography', 'Catering'],
+      profile_completion: 75
+    });
+    setLoading(false);
   };
 
   const fetchStats = async () => {
-    try {
-      const { data: profile } = await supabase
-        .from('vendor_profiles')
-        .select('id')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (!profile) return;
-
-      const [visitsRes, chatsRes, bookingsRes] = await Promise.all([
-        supabase.from('vendor_visits').select('id').eq('vendor_id', profile.id),
-        supabase.from('chat_initiations').select('id').eq('vendor_id', profile.id),
-        supabase.from('booking_interactions').select('*').eq('vendor_id', profile.id)
-      ]);
-
-      const bookings = bookingsRes.data || [];
-      const responses = bookings.filter(b => b.customer_response !== 'pending').length;
-
-      setStats({
-        visits: visitsRes.data?.length || 0,
-        chats: chatsRes.data?.length || 0,
-        bookings: bookings.length,
-        responses
-      });
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    }
+    // Demo mode - using static data
+    setStats({
+      visits: 125,
+      chats: 34,
+      bookings: 18,
+      responses: 12
+    });
   };
 
   const handleUpdateProfile = async (formData: FormData) => {
-    try {
-      const updates = {
-        business_name: formData.get('business_name') as string,
-        categories: (formData.get('categories') as string)?.split(',').map(c => c.trim()) || []
-      };
+    const updates = {
+      business_name: formData.get('business_name') as string,
+      categories: (formData.get('categories') as string)?.split(',').map(c => c.trim()) || []
+    };
 
-      const { error } = await supabase
-        .from('vendor_profiles')
-        .update(updates)
-        .eq('user_id', user?.id);
+    // Update local state for demo
+    setVendorProfile(prev => ({ ...prev, ...updates }));
 
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Profile updated successfully!",
-      });
-
-      fetchVendorProfile();
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Demo Mode",
+      description: "Profile updates will be saved when database is configured!",
+    });
   };
 
   if (loading) {
