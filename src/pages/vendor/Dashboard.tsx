@@ -8,12 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Star, Upload, MessageCircle, TrendingUp, CreditCard, Menu, X, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import QuestionnaireModal from '@/components/questionnaire/QuestionnaireModal';
+
 import { useToast } from '@/hooks/use-toast';
 
 const VendorDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [vendorProfile, setVendorProfile] = useState<any>(null);
   const [profileCompletion, setProfileCompletion] = useState(75);
   const { user } = useAuth();
@@ -39,28 +38,16 @@ const VendorDashboard = () => {
   }, []);
 
   const fetchVendorProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('vendor_profiles')
-        .select('*')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (error) throw error;
-      setVendorProfile(data);
-      setProfileCompletion(data.profile_completion || 75);
-    } catch (error) {
-      console.error('Error fetching vendor profile:', error);
-    }
+    // Mock vendor profile data
+    const mockProfile = {
+      business_name: "Royal Photography Studio",
+      categories: ["Photography", "Videography"],
+      profile_completion: 75
+    };
+    setVendorProfile(mockProfile);
+    setProfileCompletion(75);
   };
 
-  const handleQuestionnaireComplete = () => {
-    toast({
-      title: "Questionnaire Completed",
-      description: "Your profile has been updated with your responses.",
-    });
-    fetchVendorProfile();
-  };
 
   const vendorData = {
     name: vendorProfile?.business_name || "Royal Photography Studio",
@@ -124,7 +111,7 @@ const VendorDashboard = () => {
                       <span>Profile Completion</span>
                       <span>{profileCompletion}%</span>
                     </div>
-                    <Progress value={profileCompletion} className="h-2" style/>
+                    <Progress value={profileCompletion} className="h-2" />
                   </div>
                 </div>
               </>
@@ -178,29 +165,6 @@ const VendorDashboard = () => {
                         </div>
                       </div>
                     ))}
-                  </div>
-                  
-                  {/* Questionnaire Section */}
-                  <div className="mt-6 pt-6 border-t">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                      <div className="flex items-start gap-3">
-                        <HelpCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <div className="flex-1">
-                          <h4 className="font-medium text-blue-900 mb-2">Complete Your Profile</h4>
-                          <p className="text-sm text-blue-700 mb-3">
-                            Answer 20 carefully selected questions to help customers understand your services better. 
-                            This includes 10 essential questions and category-specific questions based on your expertise.
-                          </p>
-                          <Button 
-                            onClick={() => setShowQuestionnaire(true)}
-                            className="bg-blue-600 hover:bg-blue-700"
-                            size="sm"
-                          >
-                            Take Random 20 Questions
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -399,12 +363,6 @@ const VendorDashboard = () => {
         </div>
       </div>
 
-      <QuestionnaireModal
-        isOpen={showQuestionnaire}
-        onClose={() => setShowQuestionnaire(false)}
-        vendorCategories={vendorData.categories}
-        onComplete={handleQuestionnaireComplete}
-      />
     </div>
   );
 };
