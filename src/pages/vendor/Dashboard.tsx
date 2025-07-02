@@ -124,7 +124,7 @@ const VendorDashboard = () => {
                       <span>Profile Completion</span>
                       <span>{profileCompletion}%</span>
                     </div>
-                    <Progress value={profileCompletion} className="h-2" />
+                    <Progress value={profileCompletion} className="h-2" style/>
                   </div>
                 </div>
               </>
