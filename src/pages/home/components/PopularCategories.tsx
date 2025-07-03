@@ -157,7 +157,7 @@ const PopularCategories = () => {
   }, []);
 
   return (
-    <section className="py-16 lg:py-20 bg-gray-50 overflow-hidden">
+    <section className="py-16 lg:py-20 bg-gray-50 overflow-hidden" style={{ backgroundColor: '#F0EADF' }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 lg:mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 relative inline-block mb-4">
