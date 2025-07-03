@@ -29,7 +29,11 @@ const SignIn = () => {
           title: "Welcome back!",
           description: "You have been signed in successfully.",
         });
-        navigate('/vendor/dashboard');
+        if (userType === 'vendor') {
+          navigate('/vendor/dashboard');
+        } else {
+          navigate('/');
+        }
         setLoading(false);
       }, 1000);
     } catch (error) {

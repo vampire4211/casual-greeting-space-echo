@@ -25,6 +25,7 @@ const SignUp = () => {
   const [vendorData, setVendorData] = useState({
     fullName: '',
     businessName: '',
+    email: '',
     phone: '',
     age: '',
     gender: '',

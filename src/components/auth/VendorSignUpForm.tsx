@@ -6,6 +6,7 @@ import { Eye, EyeOff } from 'lucide-react';
 interface VendorData {
   fullName: string;
   businessName: string;
+  email: string;
   phone: string;
   age: string;
   gender: string;
@@ -61,6 +62,16 @@ const VendorSignUpForm: React.FC<VendorSignUpFormProps> = ({
             type="text"
             value={vendorData.businessName}
             onChange={(e) => setVendorData({...vendorData, businessName: e.target.value})}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input 
+            type="email"
+            value={vendorData.email}
+            onChange={(e) => setVendorData({...vendorData, email: e.target.value})}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
             required
           />
