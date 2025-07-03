@@ -55,7 +55,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
           </div>
           
           <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-            <span className="bg-primary-700 text-white rounded text-xs font-medium">
+            <span className="bg-primary-700 text-white px-2 py-1 rounded text-xs font-medium">
               {vendor.category}
             </span>
             <div className="flex items-center gap-1">
