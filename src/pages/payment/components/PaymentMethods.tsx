@@ -6,13 +6,12 @@ import { CreditCard, Smartphone } from 'lucide-react';
 
 interface PaymentMethodsProps {
   selectedPlan: string;
-  categoryCount: string;
   plans: any;
   onPayment: () => void;
   loading: boolean;
 }
 
-const PaymentMethods = ({ selectedPlan, categoryCount, plans, onPayment, loading }: PaymentMethodsProps) => {
+const PaymentMethods = ({ selectedPlan, plans, onPayment, loading }: PaymentMethodsProps) => {
   return (
     <Card>
       <CardHeader>
@@ -24,14 +23,10 @@ const PaymentMethods = ({ selectedPlan, categoryCount, plans, onPayment, loading
             <span>Selected Plan:</span>
             <span className="font-semibold capitalize">{selectedPlan}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Categories:</span>
-            <span>{categoryCount} categories</span>
-          </div>
           <div className="flex justify-between text-lg font-bold border-t pt-4">
             <span>Total Amount:</span>
             <span className="text-primary" style={{color:"black"}}>
-              ₹{plans[selectedPlan].price[categoryCount as '≤3' | '>3'].toLocaleString()}
+              ₹{plans[selectedPlan].price.toLocaleString()}
             </span>
           </div>
         </div>
