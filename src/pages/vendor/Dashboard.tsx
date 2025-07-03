@@ -60,7 +60,7 @@ const VendorDashboard = () => {
         {/* Sidebar */}
         <div className={`shadow-xl transition-all duration-300 ${
           sidebarCollapsed ? 'w-full md:w-16' : 'w-full md:w-80'
-        } relative md:sticky md:top-20 md:h-[calc(100vh-5rem)] overflow-y-auto`} style={{ backgroundColor: '#F0EADF' }}>
+        } relative md:sticky md:top-20 md:h-[calc(100vh-5rem)] overflow-y-auto`} style={{ backgroundColor: '#EDE8D0' }}>
           <div className="p-4 md:p-6 border-b">
             <button 
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
