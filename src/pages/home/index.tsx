@@ -15,10 +15,11 @@ const HomePage = () => {
       <Navbar />
       <main className="w-full overflow-x-hidden">
         <HeroSection />
+        <CTASection />
+        
         <TrendingCarousel />
         <PopularCategories />
         <Testimonials />
-        <CTASection />
       </main>
       <ChatIcon />
       <Footer />
