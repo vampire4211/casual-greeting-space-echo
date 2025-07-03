@@ -14,7 +14,7 @@ const Categories = () => {
     {
       id: 1,
       name: "Royal Photography Studio",
-      category: "Photography",
+      category: ["Photography","videographer"],
       location: "Mumbai",
       rating: 4.8,
       reviews: 125,
