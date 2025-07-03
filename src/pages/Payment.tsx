@@ -23,17 +23,17 @@ const Payment = () => {
   const plans = {
     basic: {
       name: 'Basic',
-      price: { '≤3': 5500, '>3': 4000 },
+      price: 5500,
       features: ['Profile listing', 'Reviews & ratings', 'Analytics access']
     },
     premium: {
       name: 'Premium',
-      price: { '≤3': 7000, '>3': 5500 },
+      price: 7000,
       features: ['Everything in Basic', 'Boosted visibility', 'Priority support']
     },
     extreme: {
       name: 'Extreme',
-      price: { '≤3': 8500, '>3': 7000 },
+      price: 8500,
       features: ['Everything in Premium', 'Homepage Highlight', 'Featured Badge']
     }
   };
@@ -43,7 +43,7 @@ const Payment = () => {
     
     try {
       const selectedPlanData = plans[selectedPlan as keyof typeof plans];
-      const amount = selectedPlanData.price[categoryCount as '≤3' | '>3'];
+      const amount = selectedPlanData.price;
       
       const userDetails = {
         name: 'John Doe',
@@ -78,48 +78,18 @@ const Payment = () => {
       <div className="pt-32 pb-20">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Subscription Plan</h1>
-            <p className="text-xl text-gray-600">Select the plan that best fits your business needs</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4 animate-fade-in">Choose Your Subscription Plan</h1>
+            <p className="text-xl text-gray-600 animate-fade-in">Select the plan that best fits your business needs</p>
           </div>
-
-          <Card className="mb-8">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Number of Categories</h3>
-              <div className="flex gap-4">
-                <label className="flex items-center">
-                  <input 
-                    type="radio"
-                    value="≤3"
-                    checked={categoryCount === '≤3'}
-                    onChange={(e) => setCategoryCount(e.target.value)}
-                    className="mr-2"
-                  />
-                  3 or fewer categories
-                </label>
-                <label className="flex items-center">
-                  <input 
-                    type="radio"
-                    value=">3"
-                    checked={categoryCount === '>3'}
-                    onChange={(e) => setCategoryCount(e.target.value)}
-                    className="mr-2"
-                  />
-                  More than 3 categories
-                </label>
-              </div>
-            </CardContent>
-          </Card>
 
           <PlanSelector
             plans={plans}
             selectedPlan={selectedPlan}
             setSelectedPlan={setSelectedPlan}
-            categoryCount={categoryCount}
           />
 
           <PaymentMethods
             selectedPlan={selectedPlan}
-            categoryCount={categoryCount}
             plans={plans}
             onPayment={handlePayment}
             loading={loading}

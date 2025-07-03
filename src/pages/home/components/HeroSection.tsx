@@ -1,9 +1,29 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+  const [category, setCategory] = useState('');
+  const [location, setLocation] = useState('');
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+
+  const locations = [
+    'Ahmedabad', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 
+    'Pune', 'Hyderabad', 'Jaipur', 'Surat', 'Vadodara', 'Rajkot'
+  ];
+
+  const handleSearch = () => {
+    if (!category) {
+      alert('Please select a category');
+      return;
+    }
+    const searchLocation = location || 'Ahmedabad';
+    navigate(`/categories?category=${category}&location=${searchLocation}`);
+  };
+
   return (
     <section className="pt-24 pb-16 px-4 bg-gradient-to-br from-primary-50 to-primary-100">
       <div className="container mx-auto">
@@ -17,20 +37,56 @@ const HeroSection = () => {
             </p>
             
             <div className="flex flex-col gap-4 max-w-2xl mb-6 lg:mb-8">
-              <select className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <select 
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
                 <option value="">Select Category</option>
                 <option value="photography">Photography</option>
                 <option value="catering">Catering</option>
                 <option value="venue">Venue</option>
                 <option value="decor">Decor</option>
                 <option value="music">Music</option>
+                <option value="makeup">Makeup</option>
               </select>
-              <input 
-                type="text" 
-                placeholder="Location (City/District)" 
-                className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-              <Button size="lg" className="bg-primary-700 hover:bg-primary-800 py-4 text-lg">
+              
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                  className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 text-left flex items-center justify-between"
+                >
+                  <span className={location ? 'text-gray-900' : 'text-gray-500'}>
+                    {location || 'Select Location (Default: Ahmedabad)'}
+                  </span>
+                  <ChevronDown className="h-5 w-5 text-gray-400" />
+                </button>
+                
+                {showLocationDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-primary-200 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+                    {locations.map((loc) => (
+                      <button
+                        key={loc}
+                        type="button"
+                        onClick={() => {
+                          setLocation(loc);
+                          setShowLocationDropdown(false);
+                        }}
+                        className="w-full px-4 py-3 text-left hover:bg-primary-50 transition-colors text-gray-900"
+                      >
+                        {loc}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <Button 
+                onClick={handleSearch}
+                size="lg" 
+                className="bg-primary-700 hover:bg-primary-800 py-4 text-lg"
+              >
                 <Search className="h-5 w-5 mr-2" />
                 Search
               </Button>

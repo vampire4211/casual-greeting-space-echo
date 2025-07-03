@@ -100,6 +100,29 @@ const VendorSignUpForm: React.FC<VendorSignUpFormProps> = ({
           </select>
         </div>
         <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Aadhaar Number</label>
+          <input 
+            type="text"
+            value={vendorData.aadhaar}
+            onChange={(e) => setVendorData({...vendorData, aadhaar: e.target.value})}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+            required
+          />
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">PAN Number</label>
+          <input 
+            type="text"
+            value={vendorData.pan}
+            onChange={(e) => setVendorData({...vendorData, pan: e.target.value})}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+            required
+          />
+        </div>
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">GST Number (Optional)</label>
           <input 
             type="text"
@@ -165,7 +188,7 @@ const VendorSignUpForm: React.FC<VendorSignUpFormProps> = ({
       </div>
 
       <Button type="submit" className="w-full">
-        Proceed to Verification
+        Sign Up
       </Button>
     </form>
   );

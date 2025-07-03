@@ -194,7 +194,10 @@ const PopularCategories = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => navigate('/categories')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/events');
+                        }}
                         className="w-full py-2 text-base transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary transform hover:translateY-[-2px] hover:shadow-lg"
                       >
                         Explore

@@ -24,12 +24,12 @@ interface VendorCardProps {
 const VendorCard = ({ vendor }: VendorCardProps) => {
   const navigate = useNavigate();
 
+  const mockTags = ['Professional', 'Experienced', 'Affordable', 'Quick Service', 'Premium Quality'];
+  const vendorTags = mockTags.slice(0, Math.floor(Math.random() * 3) + 2); // 2-4 tags
+
   return (
-    <Card 
-      className="group cursor-pointer hover:shadow-lg transition-all duration-300 bg-white"
-      onClick={() => navigate(`/vendor/${vendor.id}`)}
-    >
-      <CardContent className="p-0">
+    <Card className="group cursor-pointer hover:shadow-lg transition-all duration-300 bg-white h-full flex flex-col">
+      <CardContent className="p-0 flex flex-col h-full">
         <div className="relative">
           <img 
             src={vendor.image}
@@ -43,37 +43,54 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
           )}
         </div>
         
-        <div className="p-6">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-800 transition-colors">
-              {vendor.name}
-            </h3>
+        <div className="p-6 flex flex-col flex-grow">
+          <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-800 transition-colors mb-3">
+            {vendor.name}
+          </h3>
+          
+          {/* Rating and Reviews in one line */}
+          <div className="flex items-center gap-4 mb-3">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               <span className="text-sm font-medium">{vendor.rating}</span>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-            <span className="bg-primary-700 text-white px-2 py-1 rounded text-xs font-medium">
-              {vendor.category}
-            </span>
-            <div className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              {vendor.location}
+            <div className="flex items-center gap-1 text-sm text-gray-600">
+              <Users className="h-4 w-4" />
+              <span>{vendor.reviews} reviews</span>
             </div>
           </div>
           
+          {/* Location */}
           <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
-            <Users className="h-4 w-4" />
-            <span>{vendor.reviews} reviews</span>
+            <MapPin className="h-4 w-4" />
+            <span>{vendor.location}</span>
           </div>
           
-          <p className="text-green-700 font-bold text-lg mb-4">{vendor.price}</p>
+          {/* Tags - Two lines */}
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-2 min-h-[3.5rem]">
+              {vendorTags.map((tag, index) => (
+                <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
           
-          <Button className="w-full bg-primary-700 hover:bg-primary-800">
-            View Details
-          </Button>
+          {/* Price and Button - pushed to bottom */}
+          <div className="mt-auto">
+            <p className="text-green-700 font-bold text-lg mb-4">{vendor.price}</p>
+            
+            <Button 
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/vendor/${vendor.id}`);
+              }}
+              className="w-full bg-primary-700 hover:bg-primary-800"
+            >
+              View Details
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -25,12 +25,12 @@ const CTASection = () => {
           Whether you're planning a wedding, corporate event, or birthday party, we've got you covered.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md sm:max-w-none mx-auto">
+        <div className="flex justify-center">
           <Button 
             size="lg" 
             variant="secondary"
             onClick={() => navigate('/signup')}
-            className="px-1 sm:px-8 py-4 text-base sm:text-lg bg-pink-500 hover:bg-pink-750"
+            className="px-12 py-6 text-xl font-semibold bg-pink-500 hover:bg-pink-600 transform hover:scale-105 transition-all duration-300"
           >
             Become a Vendor
           </Button>

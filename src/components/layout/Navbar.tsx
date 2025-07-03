@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -7,6 +7,10 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if user is a vendor (mock logic - would be from auth context)
+  const isVendor = location.pathname.includes('/vendor') || localStorage.getItem('userType') === 'vendor';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +48,11 @@ const Navbar = () => {
           <Link to="/about" className="font-medium text-gray-700 hover:text-primary transition-colors">
             About Us
           </Link>
+          {isVendor && (
+            <Link to="/vendor/dashboard" className="font-medium text-gray-700 hover:text-primary transition-colors">
+              Dashboard
+            </Link>
+          )}
         </div>
 
         {/* Desktop Buttons */}
@@ -99,6 +108,15 @@ const Navbar = () => {
               >
                 About Us
               </Link>
+              {isVendor && (
+                <Link 
+                  to="/vendor/dashboard" 
+                  className="block py-3 text-lg font-medium text-gray-700 hover:text-primary transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              )}
               
               <div className="pt-4 border-t border-gray-200 space-y-3">
                 <Button 

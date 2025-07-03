@@ -164,7 +164,19 @@ const TrendingCarousel = () => {
             {categories.map((item) => (
               <div
                 key={item.id}
-                className="carousel__cell absolute w-[280px] h-[380px] left-1/2 top-1/2 -ml-[140px] -mt-[190px] transition-all duration-500 ease-in-out transform-origin-center"
+                  className="carousel__cell absolute w-[280px] h-[380px] left-1/2 top-1/2 -ml-[140px] -mt-[190px] transition-all duration-500 ease-in-out transform-origin-center cursor-pointer"
+                  onClick={() => {
+                    const categoryMap: { [key: string]: string } = {
+                      'Photography': 'photography',
+                      'Catering': 'catering', 
+                      'Venues': 'venue',
+                      'Decor': 'decor',
+                      'Music Bands': 'music',
+                      'Makeup Artists': 'makeup'
+                    };
+                    const category = categoryMap[item.title] || item.title.toLowerCase();
+                    window.location.href = `/categories?category=${category}&location=Ahmedabad`;
+                  }}
               >
                 <Card className="h-full w-full rounded-lg overflow-hidden relative border-gray-200 shadow-lg transition-transform duration-500">
                   <CardContent className="p-0 relative h-full">

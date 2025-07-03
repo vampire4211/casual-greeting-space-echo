@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 const Events = () => {
   const events = [
@@ -45,8 +46,8 @@ const Events = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map(event => (
-              <Card key={event.id} className="group cursor-pointer hover:shadow-lg transition-all duration-300">
-                <CardContent className="p-0">
+              <Card key={event.id} className="group cursor-pointer hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+                <CardContent className="p-0 flex flex-col h-full">
                   <div className="relative overflow-hidden">
                     <img 
                       src={event.image}
@@ -57,12 +58,21 @@ const Events = () => {
                       {event.category}
                     </Badge>
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col h-full">
                     <p className="text-sm text-gray-500 mb-2">{event.date}</p>
                     <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
                       {event.title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">{event.description}</p>
+                    <p className="text-gray-600 leading-relaxed mb-4 flex-grow">{event.description}</p>
+                    <Button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        alert('Processed to payment');
+                      }}
+                      className="w-full bg-primary-700 hover:bg-primary-800 mt-auto"
+                    >
+                      Book Now
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

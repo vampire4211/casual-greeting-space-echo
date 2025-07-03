@@ -150,18 +150,7 @@ const VendorDashboard = () => {
                   <CardTitle>Manage Your Portfolio</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
-                    {[1,2,3,4,5,6].map(i => (
-                      <div key={i} className="aspect-square bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
-                        <div className="text-center">
-                          <Upload className="h-6 w-6 md:h-8 md:w-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-xs md:text-sm text-gray-500">Upload Image</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                     <h4 className="font-medium text-blue-900 mb-2">Upload Guidelines</h4>
                     <ul className="text-sm text-blue-700 space-y-1">
                       <li>• Minimum: 3 images per category</li>
@@ -169,6 +158,30 @@ const VendorDashboard = () => {
                       <li>• Total size limit: 40MB</li>
                       <li>• Supported formats: JPG, PNG</li>
                     </ul>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
+                    {[1,2,3,4,5,6].map(i => (
+                      <label key={i} className="aspect-square bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files?.[0]) {
+                              toast({
+                                title: "Image Uploaded",
+                                description: `${e.target.files[0].name} has been uploaded successfully.`,
+                              });
+                            }
+                          }}
+                        />
+                        <div className="text-center">
+                          <Upload className="h-6 w-6 md:h-8 md:w-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-xs md:text-sm text-gray-500">Upload Image</p>
+                        </div>
+                      </label>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -324,7 +337,10 @@ const VendorDashboard = () => {
                       <li>✓ Advanced analytics</li>
                       <li>✗ Featured badge</li>
                     </ul>
-                    <Button className="w-full mt-6">
+                    <Button 
+                      className="w-full mt-6"
+                      onClick={() => window.location.href = '/payment'}
+                    >
                       Upgrade
                     </Button>
                   </CardContent>
@@ -346,7 +362,10 @@ const VendorDashboard = () => {
                       <li>✓ Premium placement</li>
                       <li>✓ Dedicated support</li>
                     </ul>
-                    <Button className="w-full mt-6 bg-yellow-500 hover:bg-yellow-600">
+                    <Button 
+                      className="w-full mt-6 bg-yellow-500 hover:bg-yellow-600"
+                      onClick={() => window.location.href = '/payment'}
+                    >
                       Upgrade
                     </Button>
                   </CardContent>

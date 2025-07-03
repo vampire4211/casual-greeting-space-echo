@@ -51,8 +51,9 @@ const SignUp = () => {
         alert('Please select at least one category');
         return;
       }
-      // Move to verification step for vendors
-      setCurrentStep('verification');
+      console.log('Vendor signup:', vendorData, 'Categories:', selectedCategories);
+      localStorage.setItem('userType', 'vendor');
+      navigate('/vendor/dashboard');
     } else {
       console.log('Customer signup:', customerData);
       navigate('/');
