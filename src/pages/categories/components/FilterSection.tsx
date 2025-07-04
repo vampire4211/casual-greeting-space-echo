@@ -23,7 +23,7 @@ const FilterSection = ({
   rating,
   setRating
 }: FilterSectionProps) => {
-  const categories = ['All', 'Photography', 'Catering', 'Venue', 'Decor', 'Music', 'Makeup'];
+  const categories = ['All', 'Venue', 'Decor and Styling', 'Personal Care and Grooming', 'Catering Services', 'Event Planner', 'Photography & Videography', 'Music, Anchors & Entertainment', 'Rental Services'];
   const locations = ['All', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Pune', 'Hyderabad'];
 
   return (

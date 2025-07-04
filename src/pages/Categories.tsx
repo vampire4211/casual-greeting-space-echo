@@ -14,7 +14,7 @@ const Categories = () => {
     {
       id: 1,
       name: "Royal Photography Studio",
-      category: ["Photography","videographer"],
+      category: ["Photography & Videography"],
       location: "Mumbai",
       rating: 4.8,
       reviews: 125,
@@ -25,7 +25,7 @@ const Categories = () => {
     {
       id: 2,
       name: "Delicious Catering Co.",
-      category: "Catering",
+      category: "Catering Services",
       location: "Delhi",
       rating: 4.6,
       reviews: 89,
@@ -47,7 +47,7 @@ const Categories = () => {
     {
       id: 4,
       name: "Elegant Decor Solutions",
-      category: "Decor",
+      category: "Decor and Styling",
       location: "Chennai",
       rating: 4.7,
       reviews: 93,
@@ -58,7 +58,7 @@ const Categories = () => {
     {
       id: 5,
       name: "Melody Music Band",
-      category: "Music",
+      category: "Music, Anchors & Entertainment",
       location: "Pune",
       rating: 4.5,
       reviews: 45,
@@ -69,7 +69,7 @@ const Categories = () => {
     {
       id: 6,
       name: "Glamour Makeup Studio",
-      category: "Makeup",
+      category: "Personal Care and Grooming",
       location: "Hyderabad",
       rating: 4.8,
       reviews: 112,

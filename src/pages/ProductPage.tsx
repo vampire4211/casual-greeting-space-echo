@@ -1,27 +1,32 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Star, MapPin, Users, MessageCircle, Calendar, Phone, Mail } from 'lucide-react';
+import { Star, MapPin, Users, MessageCircle, Calendar, Phone, Mail, Copy } from 'lucide-react';
 
 const ProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showBookingDialog, setShowBookingDialog] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
 
   // Mock vendor data
   const vendor = {
     id: 1,
     businessName: "Royal Photography Studio",
-    categories: ["Photography", "Videography"],
+    categories: ["Photography & Videography"],
     location: "Mumbai, Maharashtra",
     rating: 4.8,
     reviewCount: 125,
     featured: true,
+    phone: "+91 98765 43210",
+    email: "info@royalphotography.com",
     images: [
       "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=600&fit=crop",
       "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop",
@@ -198,16 +203,25 @@ const ProductPage = () => {
               {/* Action Buttons */}
               <Card>
                 <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <Button className="w-full" size="lg">
-                      <MessageCircle className="h-5 w-5 mr-2" />
-                      Chat Now
-                    </Button>
-                    <Button variant="outline" className="w-full" size="lg">
-                      <Calendar className="h-5 w-5 mr-2" />
-                      Book Now
-                    </Button>
-                  </div>
+                   <div className="space-y-4">
+                     <Button 
+                       className="w-full" 
+                       size="lg"
+                       onClick={() => navigate(`/chat?vendor=${vendor.id}`)}
+                     >
+                       <MessageCircle className="h-5 w-5 mr-2" />
+                       Chat Now
+                     </Button>
+                     <Button 
+                       variant="outline" 
+                       className="w-full" 
+                       size="lg"
+                       onClick={() => setShowBookingDialog(true)}
+                     >
+                       <Calendar className="h-5 w-5 mr-2" />
+                       Book Now
+                     </Button>
+                   </div>
                 </CardContent>
               </Card>
 
@@ -216,14 +230,14 @@ const ProductPage = () => {
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-4">Contact Information</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-primary" />
-                      <span>+91 98765 43210</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-primary" />
-                      <span>info@royalphotography.com</span>
-                    </div>
+                     <div className="flex items-center gap-3">
+                       <Phone className="h-5 w-5 text-primary" />
+                       <span>{vendor.phone}</span>
+                     </div>
+                     <div className="flex items-center gap-3">
+                       <Mail className="h-5 w-5 text-primary" />
+                       <span>{vendor.email}</span>
+                     </div>
                     <div className="flex items-center gap-3">
                       <MapPin className="h-5 w-5 text-primary" />
                       <span>{vendor.location}</span>
@@ -256,6 +270,82 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Booking Dialog */}
+      <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">Connect with {vendor.businessName}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            {/* Contact Options */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-primary" />
+                  <span className="font-medium">{vendor.phone}</span>
+                </div>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => navigator.clipboard.writeText(vendor.phone)}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <Button 
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => window.open(`https://wa.me/${vendor.phone.replace(/[^0-9]/g, '')}`, '_blank')}
+              >
+                Chat on WhatsApp
+              </Button>
+            </div>
+
+            {/* Confirmation Question */}
+            <div className="space-y-3">
+              <p className="text-sm text-gray-700">
+                Have you confirmed the deal with {vendor.businessName}?
+              </p>
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="confirmation"
+                    value="yes"
+                    checked={selectedOption === 'yes'}
+                    onChange={(e) => setSelectedOption(e.target.value)}
+                    className="text-primary"
+                  />
+                  <span className="text-sm">Yes</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="confirmation"
+                    value="no"
+                    checked={selectedOption === 'no'}
+                    onChange={(e) => setSelectedOption(e.target.value)}
+                    className="text-primary"
+                  />
+                  <span className="text-sm">No</span>
+                </label>
+              </div>
+            </div>
+
+            <Button 
+              className="w-full"
+              onClick={() => {
+                console.log('Confirmation:', selectedOption);
+                setShowBookingDialog(false);
+                setSelectedOption('');
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>

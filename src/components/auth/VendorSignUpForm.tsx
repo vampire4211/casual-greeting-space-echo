@@ -28,10 +28,14 @@ interface VendorSignUpFormProps {
 }
 
 const categories = [
-  'Photography', 'Catering', 'Venue', 'Decor', 'Music', 'Makeup',
-  'Wedding Planning', 'DJ', 'Florist', 'Transportation', 'Lighting',
-  'Sound System', 'Security', 'Cleaning', 'Entertainment', 'Gifts',
-  'Printing', 'Coordination', 'Hospitality'
+  'Venue',
+  'Decor and Styling', 
+  'Personal Care and Grooming',
+  'Catering Services',
+  'Event Planner',
+  'Photography & Videography',
+  'Music, Anchors & Entertainment',
+  'Rental Services'
 ];
 
 const VendorSignUpForm: React.FC<VendorSignUpFormProps> = ({
