@@ -80,8 +80,10 @@ const Categories = () => {
   ];
 
   const filteredVendors = vendors.filter(vendor => {
-    return (selectedCategory === '' || selectedCategory === 'All' || vendor.category === selectedCategory) &&
-           (selectedLocation === '' || selectedLocation === 'All' || vendor.location === selectedLocation);
+    const categoryMatch = selectedCategory === '' || selectedCategory === 'All' || 
+      (Array.isArray(vendor.category) ? vendor.category.includes(selectedCategory) : vendor.category === selectedCategory);
+    const locationMatch = selectedLocation === '' || selectedLocation === 'All' || vendor.location === selectedLocation;
+    return categoryMatch && locationMatch;
   });
 
   return (

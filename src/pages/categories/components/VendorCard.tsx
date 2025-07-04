@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 interface Vendor {
   id: number;
   name: string;
-  category: string;
+  category: string | string[];
   location: string;
   rating: number;
   reviews: number;
