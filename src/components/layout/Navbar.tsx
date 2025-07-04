@@ -26,7 +26,7 @@ const Navbar = () => {
       scrolled ? 'py-2 lg:py-3 shadow-xl' : 'py-4 lg:py-5'
     }`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center px-1">
+        <Link to="/" className="flex items-center">
           <img 
             src="/lovable-uploads/1b617e92-9eed-43c3-930b-89645adc6360.png" 
             alt="Event Sathi Logo" 
