@@ -22,15 +22,15 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-sm ${
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background shadow-sm ${
       scrolled ? 'py-2 lg:py-3 shadow-xl' : 'py-4 lg:py-5'
     }`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <img 
-            src="/lovable-uploads/1b617e92-9eed-43c3-930b-89645adc6360.png" 
+            src="/lovable-uploads/b1cba900-a644-4483-9069-76544ad4f676.png" 
             alt="Event Sathi Logo" 
-            className="h-10 w-10 lg:h-12 lg:w-12 object-contain filter brightness-75 contrast-125"
+            className="h-10 w-10 lg:h-12 lg:w-12 object-contain"
           />
         </Link>
         
@@ -78,7 +78,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 lg:hidden">
+          <div className="absolute top-full left-0 right-0 bg-background border-t border-border lg:hidden">
             <div className="px-4 py-6 space-y-4">
               <Link 
                 to="/" 
@@ -118,7 +118,7 @@ const Navbar = () => {
                 </Link>
               )}
               
-              <div className="pt-4 border-t border-gray-200 space-y-3">
+              <div className="pt-4 border-t border-border space-y-3">
                 <Button 
                   variant="outline" 
                   onClick={() => {
