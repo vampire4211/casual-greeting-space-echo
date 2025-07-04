@@ -28,7 +28,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <img 
-            src="/lovable-uploads/1b617e92-9eed-43c3-930b-89645adc6360.png" 
+            src="/lovable-uploads/845ac0b0-e94e-4bd1-a2aa-1d4cdf30190f.png" 
             alt="Event Sathi Logo" 
             className="h-12 w-12 rounded-full object-contain shadow-lg"
           />
