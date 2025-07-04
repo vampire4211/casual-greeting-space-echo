@@ -36,24 +36,36 @@ const Navbar = () => {
         
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-7">
-          <Link to="/" className="font-medium text-gray-700 hover:text-primary transition-colors">
-            Home
-          </Link>
-          <Link to="/categories" className="font-medium text-gray-700 hover:text-primary transition-colors">
-            Categories
-          </Link>
-          <Link to="/events" className="font-medium text-gray-700 hover:text-primary transition-colors">
-            Events
-          </Link>
-          <Link to="/about" className="font-medium text-gray-700 hover:text-primary transition-colors">
-            About Us
-          </Link>
-          {isVendor && (
-            <Link to="/vendor/dashboard" className="font-medium text-gray-700 hover:text-primary transition-colors">
-              Dashboard
-            </Link>
-          )}
-        </div>
+  
+  <Link to="/" className="relative font-semibold text-gray-900 hover:text-[#F59E0B] transition-all duration-300 text-[1.05rem] group">
+    Home
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
+
+  <Link to="/categories" className="relative font-semibold text-gray-900 hover:text-[#F59E0B] transition-all duration-300 text-[1.05rem] group">
+    Categories
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
+
+  <Link to="/events" className="relative font-semibold text-gray-900 hover:text-[#F59E0B] transition-all duration-300 text-[1.05rem] group">
+    Events
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
+
+  <Link to="/about" className="relative font-semibold text-gray-900 hover:text-[#F59E0B] transition-all duration-300 text-[1.05rem] group">
+    About Us
+    <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+  </Link>
+
+  {isVendor && (
+    <Link to="/vendor/dashboard" className="relative font-semibold text-gray-900 hover:text-[#F59E0B] transition-all duration-300 text-[1.05rem] group">
+      Dashboard
+      <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-[#F59E0B] transition-all duration-300 group-hover:w-full"></span>
+    </Link>
+  )}
+
+</div>
+
 
         {/* Desktop Buttons */}
         <div className="hidden lg:flex items-center gap-3">
