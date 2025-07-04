@@ -70,7 +70,7 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
           <div className="mb-4">
             <div className="flex flex-wrap gap-2 min-h-[3.5rem]">
               {vendorTags.map((tag, index) => (
-                <span key={index} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium border border-blue-200">
+                <span key={index} className="bg-white text-black-800 px-3 py-1 rounded text-xs font-medium border border-black">
                   {tag}
                 </span>
               ))}
