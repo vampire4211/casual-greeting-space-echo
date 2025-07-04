@@ -68,14 +68,15 @@ const VendorCard = ({ vendor }: VendorCardProps) => {
           
           {/* Tags - Consistent layout like second card */}
           <div className="mb-4">
-            <div className="flex flex-wrap gap-2 min-h-[3.5rem]">
+            <div className="flex flex-wrap gap-1 items-center">
               {vendorTags.map((tag, index) => (
-                <span key={index} className="bg-white text-black-800 px-4 py-1 rounded-half text-xs font-medium border border-black">
+                <span key={index} className="bg-white text-black px-3 py-0.5 rounded-full text-xs font-medium border border-black">
                   {tag}
                 </span>
               ))}
             </div>
           </div>
+
           
           {/* Price and Button - pushed to bottom */}
           <div className="mt-auto">
