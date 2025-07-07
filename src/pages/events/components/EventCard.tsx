@@ -32,9 +32,9 @@ const EventCard = ({ event }: EventCardProps) => {
     }
   };
   
-const handelClick()=>{
-    alert("this feature is for future")
-      }
+  const handleClick = () => {
+    alert("this feature is for future");
+  };
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -76,7 +76,7 @@ const handelClick()=>{
           <p className="text-sm font-medium text-foreground">Budget: {event.budget}</p>
         </div>
         
-        <Button className="w-full" onclick={handelClick} >book now</Button>
+        <Button className="w-full" onClick={handleClick} >book now</Button>
       </CardContent>
     </Card>
     
