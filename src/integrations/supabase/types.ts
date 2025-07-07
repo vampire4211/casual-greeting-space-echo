@@ -14,7 +14,445 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      booking_matrix: {
+        Row: {
+          customer_id: string
+          data: Json | null
+        }
+        Insert: {
+          customer_id: string
+          data?: Json | null
+        }
+        Update: {
+          customer_id?: string
+          data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_matrix_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: true
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      chat: {
+        Row: {
+          chat_start_time: string | null
+          customer_id: string | null
+          id: string
+          vendor_id: string | null
+        }
+        Insert: {
+          chat_start_time?: string | null
+          customer_id?: string | null
+          id?: string
+          vendor_id?: string | null
+        }
+        Update: {
+          chat_start_time?: string | null
+          customer_id?: string | null
+          id?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_matrix: {
+        Row: {
+          customer_id: string
+          data: Json | null
+        }
+        Insert: {
+          customer_id: string
+          data?: Json | null
+        }
+        Update: {
+          customer_id?: string
+          data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_matrix_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: true
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_profiles: {
+        Row: {
+          created_at: string | null
+          customer_id: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_profiles_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          created_at: string | null
+          email: string
+          gender: string | null
+          id: string
+          name: string | null
+          phone_number: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          gender?: string | null
+          id?: string
+          name?: string | null
+          phone_number?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          gender?: string | null
+          id?: string
+          name?: string | null
+          phone_number?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      login_cus: {
+        Row: {
+          customer_id: string | null
+          id: string
+          login_time: string | null
+        }
+        Insert: {
+          customer_id?: string | null
+          id?: string
+          login_time?: string | null
+        }
+        Update: {
+          customer_id?: string | null
+          id?: string
+          login_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "login_cus_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      login_ven: {
+        Row: {
+          id: string
+          login_time: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          id?: string
+          login_time?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          id?: string
+          login_time?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "login_ven_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_table: {
+        Row: {
+          amount: number | null
+          id: string
+          payment_date: string | null
+          plan_selected: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          id?: string
+          payment_date?: string | null
+          plan_selected?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          id?: string
+          payment_date?: string | null
+          plan_selected?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_table_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reply_matrix: {
+        Row: {
+          customer_id: string
+          data: Json | null
+        }
+        Insert: {
+          customer_id: string
+          data?: Json | null
+        }
+        Update: {
+          customer_id?: string
+          data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reply_matrix_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: true
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_matrix: {
+        Row: {
+          reviews: Json | null
+          vendor_id: string
+        }
+        Insert: {
+          reviews?: Json | null
+          vendor_id: string
+        }
+        Update: {
+          reviews?: Json | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_matrix_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: true
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_details: {
+        Row: {
+          email: string | null
+          id: string
+          no_of_images: number | null
+          overall_gr: number | null
+          question_com: string | null
+          review: string | null
+          subscription: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          email?: string | null
+          id?: string
+          no_of_images?: number | null
+          overall_gr?: number | null
+          question_com?: string | null
+          review?: string | null
+          subscription?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          email?: string | null
+          id?: string
+          no_of_images?: number | null
+          overall_gr?: number | null
+          question_com?: string | null
+          review?: string | null
+          subscription?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_details_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_pro: {
+        Row: {
+          category_display: string | null
+          id: string
+          product_details: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          category_display?: string | null
+          id?: string
+          product_details?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          category_display?: string | null
+          id?: string
+          product_details?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_pro_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          aadhar: string | null
+          address: string | null
+          age: number | null
+          business_name: string | null
+          categories: string[] | null
+          created_at: string | null
+          email: string
+          gender: string | null
+          gst: string | null
+          id: string
+          pan: string | null
+          phone_number: string | null
+          user_id: string | null
+          vendor_name: string | null
+        }
+        Insert: {
+          aadhar?: string | null
+          address?: string | null
+          age?: number | null
+          business_name?: string | null
+          categories?: string[] | null
+          created_at?: string | null
+          email: string
+          gender?: string | null
+          gst?: string | null
+          id?: string
+          pan?: string | null
+          phone_number?: string | null
+          user_id?: string | null
+          vendor_name?: string | null
+        }
+        Update: {
+          aadhar?: string | null
+          address?: string | null
+          age?: number | null
+          business_name?: string | null
+          categories?: string[] | null
+          created_at?: string | null
+          email?: string
+          gender?: string | null
+          gst?: string | null
+          id?: string
+          pan?: string | null
+          phone_number?: string | null
+          user_id?: string | null
+          vendor_name?: string | null
+        }
+        Relationships: []
+      }
+      visiting_matrix: {
+        Row: {
+          customer_id: string
+          data: Json | null
+        }
+        Insert: {
+          customer_id: string
+          data?: Json | null
+        }
+        Update: {
+          customer_id?: string
+          data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visiting_matrix_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: true
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
