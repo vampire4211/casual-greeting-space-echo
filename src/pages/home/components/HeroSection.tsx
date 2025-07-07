@@ -51,22 +51,16 @@ const HeroSection = () => {
                 <option value="makeup">Makeup</option>
               </select>
               
-
               <select 
-                value={locations}
-                onChange={(e) => setLoction(e.target.value)}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
                 className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Select location</option>
-                <option value="photography">Ahmedabad</option>
-                <option value="catering">Mumbai</option>
-                <option value="venue"> Chennai </option>
-                <option value="decor"> Kolkata </option>
-                <option value="music">delhi</option>
-                <option value="makeup"> Punjab </option>
+                {locations.map(loc => (
+                  <option key={loc} value={loc}>{loc}</option>
+                ))}
               </select>
-                )}
-              </div>
               
               <Button 
                 onClick={handleSearch}
