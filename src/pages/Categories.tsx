@@ -3,6 +3,8 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FilterSection from './categories/components/FilterSection';
 import VendorCard from './categories/components/VendorCard';
+import { useVendors } from '@/hooks/useVendors';
+import { useCategories } from '@/hooks/useCategories';
 
 const Categories = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -10,81 +12,54 @@ const Categories = () => {
   const [priceRange, setPriceRange] = useState('');
   const [rating, setRating] = useState('');
 
-  const vendors = [
-    {
-      id: 1,
-      name: "Royal Photography Studio",
-      category: ["Photography & Videography"],
-      location: "Mumbai",
-      rating: 4.8,
-      reviews: 125,
-      price: "₹25,000 - ₹50,000",
-      image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=300&fit=crop",
-      featured: true
-    },
-    {
-      id: 2,
-      name: "Delicious Catering Co.",
-      category: "Catering Services",
-      location: "Delhi",
-      rating: 4.6,
-      reviews: 89,
-      price: "₹500 - ₹1,200 per plate",
-      image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
-      featured: false
-    },
-    {
-      id: 3,
-      name: "Grand Palace Venues",
-      category: "Venue",
-      location: "Bangalore",
-      rating: 4.9,
-      reviews: 67,
-      price: "₹1,00,000 - ₹3,00,000",
-      image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=300&fit=crop",
-      featured: true
-    },
-    {
-      id: 4,
-      name: "Elegant Decor Solutions",
-      category: "Decor and Styling",
-      location: "Chennai",
-      rating: 4.7,
-      reviews: 93,
-      price: "₹15,000 - ₹75,000",
-      image: "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=300&fit=crop",
-      featured: false
-    },
-    {
-      id: 5,
-      name: "Melody Music Band",
-      category: "Music, Anchors & Entertainment",
-      location: "Pune",
-      rating: 4.5,
-      reviews: 45,
-      price: "₹20,000 - ₹80,000",
-      image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-      featured: false
-    },
-    {
-      id: 6,
-      name: "Glamour Makeup Studio",
-      category: "Personal Care and Grooming",
-      location: "Hyderabad",
-      rating: 4.8,
-      reviews: 112,
-      price: "₹8,000 - ₹25,000",
-      image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop",
-      featured: true
-    }
-  ];
+  const { vendors, loading, error } = useVendors(selectedCategory, selectedLocation);
+  const { categories } = useCategories();
 
-  const filteredVendors = vendors.filter(vendor => {
-    const categoryMatch = selectedCategory === '' || selectedCategory === 'All' || 
-      (Array.isArray(vendor.category) ? vendor.category.includes(selectedCategory) : vendor.category === selectedCategory);
-    const locationMatch = selectedLocation === '' || selectedLocation === 'All' || vendor.location === selectedLocation;
-    return categoryMatch && locationMatch;
-  });
+  // Transform vendors data to match the expected format
+  const transformedVendors = vendors.map((vendor, index) => ({
+    id: index + 1, // Convert to number for compatibility
+    name: vendor.business_name || vendor.vendor_name || 'Unknown Vendor',
+    category: vendor.categories || [],
+    location: vendor.address?.split(',')[0] || 'Unknown Location',
+    rating: vendor.vendor_details?.[0]?.overall_gr || 4.5,
+    reviews: vendor.vendor_details?.[0]?.no_of_images || Math.floor(Math.random() * 100) + 10,
+    price: `₹${Math.floor(Math.random() * 50000) + 10000} - ₹${Math.floor(Math.random() * 100000) + 50000}`,
+    image: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000000) + 1000000000000}?w=400&h=300&fit=crop`,
+    featured: Math.random() > 0.7
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
+        <Navbar />
+        <div className="pt-32 pb-20">
+          <div className="container mx-auto px-4">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading vendors...</p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
+        <Navbar />
+        <div className="pt-32 pb-20">
+          <div className="container mx-auto px-4">
+            <div className="text-center">
+              <p className="text-red-600">Error loading vendors: {error}</p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
@@ -109,7 +84,7 @@ const Categories = () => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredVendors.map((vendor) => (
+            {transformedVendors.map((vendor) => (
               <VendorCard key={vendor.id} vendor={vendor} />
             ))}
           </div>

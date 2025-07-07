@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Filter } from 'lucide-react';
+import { useCategories } from '@/hooks/useCategories';
 
 interface FilterSectionProps {
   selectedCategory: string;
@@ -23,7 +24,8 @@ const FilterSection = ({
   rating,
   setRating
 }: FilterSectionProps) => {
-  const categories = ['All', 'Venue', 'Decor and Styling', 'Personal Care and Grooming', 'Catering Services', 'Event Planner', 'Photography & Videography', 'Music, Anchors & Entertainment', 'Rental Services'];
+  const { categories } = useCategories();
+  const categoryOptions = ['All', ...categories.map(cat => cat.name)];
   const locations = ['All', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Pune', 'Hyderabad'];
 
   return (
@@ -40,7 +42,7 @@ const FilterSection = ({
           className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           <option value="">Select Category</option>
-          {categories.map(cat => (
+          {categoryOptions.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>

@@ -3,26 +3,47 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useCustomers } from '@/hooks/useCustomers';
+import { useVendors } from '@/hooks/useVendors';
 
 const UserManagement = () => {
+  const { customers, loading: customersLoading } = useCustomers();
+  const { vendors, loading: vendorsLoading } = useVendors();
+
   const users = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      email: "priya@example.com",
-      type: "Customer",
-      status: "Active",
-      joinDate: "2023-01-15"
-    },
-    {
-      id: 2,
-      name: "Rajesh Kumar",
-      email: "rajesh@example.com",
-      type: "Vendor",
-      status: "Active",
-      joinDate: "2023-02-20"
-    }
+    ...customers.map(customer => ({
+      id: customer.id,
+      name: customer.name || 'Unknown Customer',
+      email: customer.email,
+      type: 'Customer',
+      status: 'Active',
+      joinDate: new Date(customer.created_at || '').toLocaleDateString()
+    })),
+    ...vendors.slice(0, 10).map(vendor => ({
+      id: vendor.id,
+      name: vendor.vendor_name || vendor.business_name || 'Unknown Vendor',
+      email: vendor.email,
+      type: 'Vendor',
+      status: 'Active',
+      joinDate: new Date(vendor.created_at || '').toLocaleDateString()
+    }))
   ];
+
+  if (customersLoading || vendorsLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>User Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-2 text-gray-600">Loading users...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
