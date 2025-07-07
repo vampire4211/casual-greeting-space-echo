@@ -51,34 +51,20 @@ const HeroSection = () => {
                 <option value="makeup">Makeup</option>
               </select>
               
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                  className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 text-left flex items-center justify-between"
-                >
-                  <span className={location ? 'text-gray-900' : 'text-gray-500'}>
-                    {location || 'Select Location (Default: Ahmedabad)'}
-                  </span>
-                  <ChevronDown className="h-5 w-5 text-gray-400" />
-                </button>
-                
-                {showLocationDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-primary-200 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
-                    {locations.map((loc) => (
-                      <button
-                        key={loc}
-                        type="button"
-                        onClick={() => {
-                          setLocation(loc);
-                          setShowLocationDropdown(false);
-                        }}
-                        className="w-full px-4 py-3 text-left hover:bg-primary-50 transition-colors text-gray-900"
-                      >
-                        {loc}
-                      </button>
-                    ))}
-                  </div>
+
+              <select 
+                value={locations}
+                onChange={(e) => setLoction(e.target.value)}
+                className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">Select location</option>
+                <option value="photography">Ahmedabad</option>
+                <option value="catering">Mumbai</option>
+                <option value="venue"> Chennai </option>
+                <option value="decor"> Kolkata </option>
+                <option value="music">delhi</option>
+                <option value="makeup"> Punjab </option>
+              </select>
                 )}
               </div>
               
