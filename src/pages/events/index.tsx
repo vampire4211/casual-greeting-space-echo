@@ -3,7 +3,6 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import EventCard from './components/EventCard';
 import EventFilters from './components/EventFilters';
-import CreateEventModal from './components/CreateEventModal';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
@@ -66,13 +65,6 @@ const EventsPage = () => {
               <h1 className="text-4xl font-bold text-foreground mb-4">Events</h1>
               <p className="text-xl text-muted-foreground">Discover and plan amazing events</p>
             </div>
-            <Button 
-              onClick={() => setShowCreateModal(true)}
-              className="bg-primary-700 hover:bg-primary-800"
-            >
-              <Plus className="h-5 w-5 mr-2" />
-              Create Event
-            </Button>
           </div>
 
           <EventFilters filters={filters} setFilters={setFilters} />
@@ -85,10 +77,6 @@ const EventsPage = () => {
         </div>
       </div>
 
-      <CreateEventModal 
-        isOpen={showCreateModal} 
-        onClose={() => setShowCreateModal(false)} 
-      />
 
       <Footer />
     </div>
