@@ -43,12 +43,14 @@ const HeroSection = () => {
                 className="w-full px-4 py-4 text-base rounded-lg border border-primary-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Select Category</option>
-                <option value="photography">Photography</option>
-                <option value="catering">Catering</option>
                 <option value="venue">Venue</option>
-                <option value="decor">Decor</option>
-                <option value="music">Music</option>
-                <option value="makeup">Makeup</option>
+                <option value="decor">Decor and Styling</option>
+                <option value="personal-care">Personal Care and Grooming</option>
+                <option value="catering">Catering Services</option>
+                <option value="event-planner">Event Planner</option>
+                <option value="photography">Photography & Videography</option>
+                <option value="music">Music, Anchors & Entertainment</option>
+                <option value="rental">Rental Services</option>
               </select>
               
               <select 
