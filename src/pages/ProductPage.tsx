@@ -156,7 +156,10 @@ const ProductPage = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
-              <VendorImageCarousel images={transformedVendor.images} />
+              <VendorImageCarousel 
+                vendorId={parseInt(vendor.id)} 
+                fallbackImages={transformedVendor.images} 
+              />
               <VendorServices categories={transformedVendor.categories} />
               <VendorPackages packages={transformedVendor.packages} />
               <VendorServiceInfo 

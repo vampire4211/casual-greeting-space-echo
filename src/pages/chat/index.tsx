@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import ChatSidebar from './components/ChatSidebar';
 import ChatWindow from './components/ChatWindow';
-import { Send, Phone, Video } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const ChatPage = () => {
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
-  const messagesEndRef = useRef(null);
+  const [searchParams] = useSearchParams();
+  const vendorParam = searchParams.get('vendor');
+  const [selectedChat, setSelectedChat] = useState(vendorParam ? parseInt(vendorParam) : null);
+  
+  // Mock data - in real app, get from auth context
+  const currentUserId = 1;
+  const currentUserType = 'customer' as const;
 
   const chats = [
     {
@@ -41,61 +44,6 @@ const ChatPage = () => {
     }
   ];
 
-  const mockMessages = [
-    {
-      id: 1,
-      sender: "vendor",
-      content: "Hello! Thank you for your interest in our photography services. How can I help you today?",
-      timestamp: "10:30 AM",
-      type: "text"
-    },
-    {
-      id: 2,
-      sender: "user",
-      content: "Hi! I'm looking for a photographer for my wedding in March. Can you tell me about your packages?",
-      timestamp: "10:32 AM",
-      type: "text"
-    },
-    {
-      id: 3,
-      sender: "vendor",
-      content: "Congratulations on your upcoming wedding! We have several packages available. Would you like to see our portfolio first?",
-      timestamp: "10:33 AM",
-      type: "text"
-    },
-    {
-      id: 4,
-      sender: "vendor",
-      content: "Here are some samples from recent weddings",
-      timestamp: "10:34 AM",
-      type: "text"
-    }
-  ];
-
-  useEffect(() => {
-    if (selectedChat) {
-      setMessages(mockMessages);
-    }
-  }, [selectedChat]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  const handleSendMessage = () => {
-    if (message.trim() && selectedChat) {
-      const newMessage = {
-        id: messages.length + 1,
-        sender: "user",
-        content: message,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: "text"
-      };
-      setMessages([...messages, newMessage]);
-      setMessage('');
-    }
-  };
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F0EADF' }}>
       <Navbar />
@@ -103,8 +51,8 @@ const ChatPage = () => {
       <div className="pt-20 h-screen flex">
         <ChatSidebar 
           chats={chats}
-          selectedChat={selectedChat}
-          onSelectChat={setSelectedChat}
+          selectedChat={chats.find(c => c.id === selectedChat) || null}
+          onSelectChat={(chat) => setSelectedChat(chat?.id || null)}
         />
         
         <div className="flex-1 flex flex-col">
@@ -114,49 +62,27 @@ const ChatPage = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <img 
-                      src={selectedChat.avatar} 
-                      alt={selectedChat.name}
+                      src={chats.find(c => c.id === selectedChat)?.avatar} 
+                      alt={chats.find(c => c.id === selectedChat)?.name}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                     <div>
-                      <h3 className="font-semibold text-foreground">{selectedChat.name}</h3>
+                      <h3 className="font-semibold text-foreground">
+                        {chats.find(c => c.id === selectedChat)?.name}
+                      </h3>
                       <p className="text-sm text-muted-foreground">
-                        {selectedChat.online ? 'Online' : 'Last seen 2 hours ago'}
+                        {chats.find(c => c.id === selectedChat)?.online ? 'Online' : 'Last seen 2 hours ago'}
                       </p>
                     </div>
                   </div>
-                  
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <Phone className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Video className="h-4 w-4" />
-                    </Button>
-                  </div>
                 </div>
               </div>
               
-              <ChatWindow 
-                messages={messages}
-                messagesEndRef={messagesEndRef}
+              <ChatWindow
+                customerId={currentUserId}
+                vendorId={selectedChat}
+                currentUserType={currentUserType}
               />
-              
-              <div className="border-t border-border p-4 bg-card">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    placeholder="Type your message..."
-                    className="flex-1 px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                  <Button onClick={handleSendMessage} className="bg-primary-700 hover:bg-primary-800">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
