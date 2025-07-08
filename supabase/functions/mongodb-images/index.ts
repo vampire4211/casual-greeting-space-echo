@@ -26,8 +26,12 @@ serve(async (req) => {
       throw new Error('MongoDB URL not configured')
     }
 
+    console.log('Connecting to MongoDB...')
     const client = new MongoClient()
-    await client.connect(mongoUrl)
+    
+    // Replace <db_password> placeholder with actual password from environment
+    const finalUrl = mongoUrl.replace('<db_password>', Deno.env.get('MONGODB_PASSWORD') || 'defaultpassword')
+    await client.connect(finalUrl)
     
     const db = client.database("eventsathi")
     const imagesCollection = db.collection<VendorImage>("vendor_images")
