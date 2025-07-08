@@ -18,25 +18,63 @@ export const useVendors = (category?: string, location?: string) => {
     try {
       setLoading(true);
       let query = supabase
-        .from('vendors')
+        .from('vendor_details')
         .select(`
           *,
-          vendor_details (*)
+          vendor_id,
+          vendors!inner (
+            id,
+            vendor_name,
+            business_name,
+            email,
+            phone_number,
+            address,
+            categories,
+            created_at
+          )
         `);
 
       if (category && category !== 'All') {
-        query = query.contains('categories', [category]);
+        query = query.contains('vendors.categories', [category]);
       }
 
       if (location && location !== 'All') {
-        query = query.ilike('address', `%${location}%`);
+        query = query.ilike('vendors.address', `%${location}%`);
       }
 
       const { data, error } = await query;
 
       if (error) throw error;
 
-      setVendors(data || []);
+      // Transform the data to match the expected format
+      const transformedData = data?.map(item => ({
+        id: item.vendors.id,
+        vendor_name: item.vendors.vendor_name,
+        business_name: item.vendors.business_name,
+        email: item.vendors.email,
+        phone_number: item.vendors.phone_number,
+        address: item.vendors.address,
+        categories: item.vendors.categories,
+        created_at: item.vendors.created_at,
+        user_id: null,
+        age: null,
+        gender: null,
+        aadhar: null,
+        pan: null,
+        gst: null,
+        vendor_details: [{
+          id: item.id,
+          vendor_id: item.vendor_id,
+          overall_gr: item.overall_gr,
+          no_of_images: item.no_of_images,
+          subscription: item.subscription,
+          question_com: item.question_com,
+          review: item.review,
+          email: item.email
+        }]
+      })) || [];
+
+      setVendors(transformedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

@@ -25,18 +25,47 @@ const ProductPage = () => {
       if (!id) return;
       
       try {
-        // For demo, we'll just get the first vendor since we're using mock IDs
+        // Get vendor data with details
         const { data, error } = await supabase
-          .from('vendors')
+          .from('vendor_details')
           .select(`
             *,
-            vendor_details (*)
+            vendors!inner (
+              id,
+              vendor_name,
+              business_name,
+              email,
+              phone_number,
+              address,
+              categories,
+              created_at
+            )
           `)
           .limit(1)
           .single();
 
         if (error) throw error;
-        setVendor(data);
+        
+        // Transform to match expected format
+        const transformedVendor = {
+          id: data.vendors.id,
+          vendor_name: data.vendors.vendor_name,
+          business_name: data.vendors.business_name,
+          email: data.vendors.email,
+          phone_number: data.vendors.phone_number,
+          address: data.vendors.address,
+          categories: data.vendors.categories,
+          created_at: data.vendors.created_at,
+          user_id: null,
+          age: null,
+          gender: null,
+          aadhar: null,
+          pan: null,
+          gst: null,
+          vendor_details: [data]
+        };
+        
+        setVendor(transformedVendor);
       } catch (err) {
         console.error('Error fetching vendor:', err);
       } finally {
