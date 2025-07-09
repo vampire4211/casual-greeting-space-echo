@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { vendorsAPI } from '@/services/api';
 
 export interface Vendor {
   id: number;
@@ -26,32 +27,17 @@ export const useVendors = (category?: string, location?: string) => {
   const fetchVendors = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      let url = 'http://localhost:8000/api/vendors/';
-      const params = new URLSearchParams();
+      const params: any = {};
+      if (category && category !== 'All') params.category = category;
+      if (location && location !== 'All') params.location = location;
       
-      if (category && category !== 'All') {
-        params.append('category', category);
-      }
-      
-      if (location && location !== 'All') {
-        params.append('location', location);
-      }
-      
-      if (params.toString()) {
-        url += '?' + params.toString();
-      }
-
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setVendors(data.vendors || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      const response = await vendorsAPI.getVendors(params);
+      setVendors(response.data.vendors || []);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.error || 'Failed to fetch vendors';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

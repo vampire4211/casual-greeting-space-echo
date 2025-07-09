@@ -1,97 +1,60 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Avg
 from accounts.models import VendorProfile
 from categories.models import Category
-from .models import VendorCategory, VendorService, VendorPackage, VendorImage, VendorReview
+from .models import VendorCategoryImages, VendorService, VendorPackage
 import json
+import base64
 import random
 
 @csrf_exempt
 @require_http_methods(["GET"])
 def vendor_list(request):
     """Get all vendors with filtering options"""
-    category = request.GET.get('category')
-    location = request.GET.get('location')
-    
-    vendors = VendorProfile.objects.filter(is_verified=True)
-    
-    if category and category != 'All':
-        vendors = vendors.filter(categories__category__name__icontains=category)
-    
-    if location and location != 'All':
-        vendors = vendors.filter(city__icontains=location)
-    
-    vendor_data = []
-    for vendor in vendors:
-        # Get vendor categories
-        vendor_categories = VendorCategory.objects.filter(vendor=vendor)
-        categories = [vc.category.name for vc in vendor_categories]
-        
-        # Get vendor images
-        vendor_images = VendorImage.objects.filter(vendor=vendor).order_by('order')[:3]
-        images = [f"/api/media/image/{img.image_id}" for img in vendor_images]
-        
-        # Get vendor services for pricing
-        services = VendorService.objects.filter(vendor=vendor)
-        min_price = min([service.base_price for service in services]) if services else random.randint(10000, 30000)
-        max_price = max([service.max_price or service.base_price for service in services]) if services else min_price + random.randint(20000, 50000)
-        
-        vendor_data.append({
-            'id': vendor.id,
-            'business_name': vendor.business_name,
-            'vendor_name': vendor.user.first_name + ' ' + vendor.user.last_name,
-            'email': vendor.user.email,
-            'phone_number': vendor.user.phone,
-            'address': vendor.address,
-            'city': vendor.city,
-            'state': vendor.state,
-            'categories': categories,
-            'rating': float(vendor.rating),
-            'total_reviews': vendor.total_reviews,
-            'images': images,
-            'price_range': f"₹{int(min_price)} - ₹{int(max_price)}",
-            'subscription_plan': vendor.subscription_plan,
-            'created_at': vendor.user.date_joined.isoformat()
-        })
-    
-    return JsonResponse({'vendors': vendor_data})
-
-@csrf_exempt
-@require_http_methods(["GET"])
-def get_vendors_by_category(request, category_name):
-    """Get vendors filtered by category"""
     try:
-        category = Category.objects.get(name__iexact=category_name)
-        vendor_categories = VendorCategory.objects.filter(category=category)
-        vendors = [vc.vendor for vc in vendor_categories if vc.vendor.is_verified]
+        category = request.GET.get('category')
+        location = request.GET.get('location')
+        
+        vendors = VendorProfile.objects.filter(is_verified=True)
+        
+        if category and category != 'All':
+            vendors = vendors.filter(categories__contains=[category])
+        
+        if location and location != 'All':
+            vendors = vendors.filter(Q(city__icontains=location) | Q(address__icontains=location))
         
         vendor_data = []
         for vendor in vendors:
-            # Get all categories for this vendor
-            all_categories = VendorCategory.objects.filter(vendor=vendor)
-            categories = [vc.category.name for vc in all_categories]
+            # Get vendor images for display
+            vendor_images = VendorCategoryImages.objects.filter(vendor=vendor)[:3]
+            images = []
+            for img in vendor_images:
+                image_base64 = base64.b64encode(img.image_data).decode('utf-8')
+                image_url = f"data:{img.image_type};base64,{image_base64}"
+                images.append(image_url)
             
-            # Get vendor images
-            vendor_images = VendorImage.objects.filter(vendor=vendor).order_by('order')[:3]
-            images = [f"/api/media/image/{img.image_id}" for img in vendor_images]
-            
-            # Get services for pricing
+            # Calculate price range from services
             services = VendorService.objects.filter(vendor=vendor)
-            min_price = min([service.base_price for service in services]) if services else random.randint(10000, 30000)
-            max_price = max([service.max_price or service.base_price for service in services]) if services else min_price + random.randint(20000, 50000)
+            if services:
+                min_price = min([service.base_price for service in services])
+                max_price = max([service.max_price or service.base_price for service in services])
+            else:
+                min_price = random.randint(10000, 30000)
+                max_price = min_price + random.randint(20000, 50000)
             
             vendor_data.append({
                 'id': vendor.id,
                 'business_name': vendor.business_name,
-                'vendor_name': vendor.user.first_name + ' ' + vendor.user.last_name,
+                'vendor_name': f"{vendor.user.first_name} {vendor.user.last_name}",
                 'email': vendor.user.email,
                 'phone_number': vendor.user.phone,
                 'address': vendor.address,
                 'city': vendor.city,
                 'state': vendor.state,
-                'categories': categories,
+                'categories': vendor.categories,
                 'rating': float(vendor.rating),
                 'total_reviews': vendor.total_reviews,
                 'images': images,
@@ -102,8 +65,8 @@ def get_vendors_by_category(request, category_name):
         
         return JsonResponse({'vendors': vendor_data})
     
-    except Category.DoesNotExist:
-        return JsonResponse({'error': 'Category not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -111,10 +74,6 @@ def vendor_detail(request, vendor_id):
     """Get detailed information about a specific vendor"""
     try:
         vendor = VendorProfile.objects.get(id=vendor_id, is_verified=True)
-        
-        # Get vendor categories
-        vendor_categories = VendorCategory.objects.filter(vendor=vendor)
-        categories = [vc.category.name for vc in vendor_categories]
         
         # Get vendor services
         services = VendorService.objects.filter(vendor=vendor)
@@ -138,44 +97,44 @@ def vendor_detail(request, vendor_id):
             'features': package.features
         } for package in packages]
         
-        # Get vendor images
-        vendor_images = VendorImage.objects.filter(vendor=vendor).order_by('order')
-        images = [{
-            'id': image.id,
-            'image_url': f"/api/media/image/{image.image_id}",
-            'title': image.title,
-            'description': image.description,
-            'is_featured': image.is_featured
-        } for image in vendor_images]
-        
-        # Get vendor reviews
-        reviews = VendorReview.objects.filter(vendor=vendor).order_by('-created_at')[:10]
-        review_data = [{
-            'id': review.id,
-            'customer_name': review.customer.user.first_name + ' ' + review.customer.user.last_name,
-            'rating': review.rating,
-            'comment': review.comment,
-            'created_at': review.created_at.isoformat()
-        } for review in reviews]
+        # Get vendor images organized by category
+        vendor_images = VendorCategoryImages.objects.filter(vendor=vendor).order_by('category_name', 'image_order')
+        images_by_category = {}
+        for image in vendor_images:
+            if image.category_name not in images_by_category:
+                images_by_category[image.category_name] = []
+            
+            image_base64 = base64.b64encode(image.image_data).decode('utf-8')
+            image_url = f"data:{image.image_type};base64,{image_base64}"
+            
+            images_by_category[image.category_name].append({
+                'id': image.id,
+                'image_url': image_url,
+                'image_name': image.image_name,
+                'is_featured': image.is_featured,
+                'order': image.image_order
+            })
         
         vendor_data = {
             'id': vendor.id,
             'business_name': vendor.business_name,
-            'vendor_name': vendor.user.first_name + ' ' + vendor.user.last_name,
+            'vendor_name': f"{vendor.user.first_name} {vendor.user.last_name}",
             'email': vendor.user.email,
             'phone_number': vendor.user.phone,
             'address': vendor.address,
             'city': vendor.city,
             'state': vendor.state,
             'pincode': vendor.pincode,
-            'categories': categories,
+            'categories': vendor.categories,
             'rating': float(vendor.rating),
             'total_reviews': vendor.total_reviews,
             'subscription_plan': vendor.subscription_plan,
+            'business_info': vendor.business_info,
+            'pricing_info': vendor.pricing_info,
+            'availability_info': vendor.availability_info,
             'services': service_data,
             'packages': package_data,
-            'images': images,
-            'reviews': review_data,
+            'images_by_category': images_by_category,
             'created_at': vendor.user.date_joined.isoformat()
         }
         
@@ -183,37 +142,112 @@ def vendor_detail(request, vendor_id):
     
     except VendorProfile.DoesNotExist:
         return JsonResponse({'error': 'Vendor not found'}, status=404)
-
-@csrf_exempt
-@require_http_methods(["GET"])
-def vendor_images(request):
-    """Get images for a specific vendor"""
-    vendor_id = request.GET.get('vendor_id')
-    
-    if not vendor_id:
-        return JsonResponse({'error': 'Vendor ID is required'}, status=400)
-    
-    try:
-        vendor = VendorProfile.objects.get(id=vendor_id)
-        images = VendorImage.objects.filter(vendor=vendor).order_by('order')
-        
-        image_data = [{
-            'id': image.id,
-            'image_url': f"/api/media/image/{image.image_id}",
-            'title': image.title,
-            'description': image.description,
-            'is_featured': image.is_featured,
-            'order': image.order
-        } for image in images]
-        
-        return JsonResponse({'images': image_data})
-    
-    except VendorProfile.DoesNotExist:
-        return JsonResponse({'error': 'Vendor not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def upload_vendor_image(request):
-    """Upload image for a vendor"""
-    # This will be implemented when we add media storage functionality
-    return JsonResponse({'message': 'Image upload endpoint ready'})
+@login_required
+def upload_vendor_category_image(request):
+    """Upload images for vendor categories"""
+    try:
+        if request.user.user_type != 'vendor':
+            return JsonResponse({'error': 'Only vendors can upload images'}, status=403)
+        
+        vendor_profile = VendorProfile.objects.get(user=request.user)
+        
+        category_name = request.POST.get('category_name')
+        image_order = int(request.POST.get('image_order', 0))
+        is_featured = request.POST.get('is_featured', 'false').lower() == 'true'
+        
+        if 'image' not in request.FILES:
+            return JsonResponse({'error': 'No image file provided'}, status=400)
+        
+        image_file = request.FILES['image']
+        
+        # Validate image type
+        allowed_types = ['image/jpeg', 'image/jpg', 'image/png']
+        if image_file.content_type not in allowed_types:
+            return JsonResponse({'error': 'Only JPEG, JPG, and PNG files are allowed'}, status=400)
+        
+        # Validate category belongs to vendor
+        if category_name not in vendor_profile.categories:
+            return JsonResponse({'error': 'Category not assigned to vendor'}, status=400)
+        
+        # Read image data
+        image_data = image_file.read()
+        
+        # Create image record
+        vendor_image = VendorCategoryImages.objects.create(
+            vendor=vendor_profile,
+            category_name=category_name,
+            image_data=image_data,
+            image_name=image_file.name,
+            image_type=image_file.content_type,
+            image_order=image_order,
+            is_featured=is_featured
+        )
+        
+        return JsonResponse({
+            'message': 'Image uploaded successfully',
+            'image_id': vendor_image.id,
+            'category_name': category_name,
+            'image_order': image_order
+        })
+    
+    except VendorProfile.DoesNotExist:
+        return JsonResponse({'error': 'Vendor profile not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["GET"])
+@login_required
+def vendor_dashboard_data(request):
+    """Get vendor dashboard data including categories and images"""
+    try:
+        if request.user.user_type != 'vendor':
+            return JsonResponse({'error': 'Only vendors can access dashboard'}, status=403)
+        
+        vendor_profile = VendorProfile.objects.get(user=request.user)
+        
+        # Get images organized by category
+        dashboard_data = {}
+        for category in vendor_profile.categories:
+            category_images = VendorCategoryImages.objects.filter(
+                vendor=vendor_profile,
+                category_name=category
+            ).order_by('image_order')
+            
+            images = []
+            for img in category_images:
+                image_base64 = base64.b64encode(img.image_data).decode('utf-8')
+                image_url = f"data:{img.image_type};base64,{image_base64}"
+                
+                images.append({
+                    'id': img.id,
+                    'image_url': image_url,
+                    'image_name': img.image_name,
+                    'order': img.image_order,
+                    'is_featured': img.is_featured
+                })
+            
+            dashboard_data[category] = {
+                'images': images,
+                'total_images': len(images)
+            }
+        
+        return JsonResponse({
+            'vendor_info': {
+                'business_name': vendor_profile.business_name,
+                'categories': vendor_profile.categories,
+                'rating': float(vendor_profile.rating),
+                'total_reviews': vendor_profile.total_reviews
+            },
+            'categories_data': dashboard_data
+        })
+    
+    except VendorProfile.DoesNotExist:
+        return JsonResponse({'error': 'Vendor profile not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

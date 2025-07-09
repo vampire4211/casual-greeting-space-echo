@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { categoriesAPI } from '@/services/api';
 
 interface Category {
   id: number;
   name: string;
   description: string;
   icon: string;
-  vendor_count: number;
+  subcategories: any[];
   created_at: string;
 }
 
@@ -17,17 +18,13 @@ export const useCategories = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      const response = await fetch('http://localhost:8000/api/categories/');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setCategories(data.categories || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      const response = await categoriesAPI.getCategories();
+      setCategories(response.data.categories || []);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.error || 'Failed to fetch categories';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
