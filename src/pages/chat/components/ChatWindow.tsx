@@ -7,8 +7,8 @@ import { Send, User, UserCheck } from 'lucide-react';
 import { useChat } from '@/hooks/useChat';
 
 interface ChatWindowProps {
-  customerId: number;
-  vendorId: number;
+  customerId: string;
+  vendorId: string;
   currentUserType: "customer" | "vendor";
 }
 

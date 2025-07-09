@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { chatService, ChatMessage } from '@/services/chatService';
 
-export const useChat = (customerId: number, vendorId: number) => {
+export const useChat = (customerId: string, vendorId: string) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [loading, setLoading] = useState(true);

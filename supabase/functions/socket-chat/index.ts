@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 serve(async (req) => {
   const { headers } = req
@@ -9,6 +10,12 @@ serve(async (req) => {
   }
 
   const { socket, response } = Deno.upgradeWebSocket(req)
+  
+  // Initialize Supabase client
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  )
   
   // Store connected clients
   const clients = new Map()
@@ -30,44 +37,46 @@ serve(async (req) => {
           room: `${customer_id}_${vendor_id}`
         }))
       } else if (type === 'send_message') {
-        // Broadcast message to room participants
-        const messageData = {
-          type: 'new_message',
-          customer_id,
-          vendor_id,
-          message,
-          sender,
-          timestamp: new Date().toISOString()
-        }
-
-        // Send to MongoDB via edge function
+        // Save message to PostgreSQL
         try {
-          const response = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/mongodb-chat`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`
-            },
-            body: JSON.stringify({
+          const { error: saveError } = await supabase
+            .from('chat_messages')
+            .insert({
               customer_id,
               vendor_id,
-              message,
-              sender
+              sender,
+              message
             })
-          })
 
-          if (response.ok) {
-            // Broadcast to all clients in the same room
-            for (const [clientSocket, clientData] of clients.entries()) {
-              if (clientData.room === `${customer_id}_${vendor_id}`) {
-                if (clientSocket.readyState === WebSocket.OPEN) {
-                  clientSocket.send(JSON.stringify(messageData))
-                }
+          if (saveError) {
+            console.error('Error saving message to PostgreSQL:', saveError)
+            socket.send(JSON.stringify({
+              type: 'error',
+              message: 'Failed to save message'
+            }))
+            return
+          }
+
+          // Broadcast message to room participants
+          const messageData = {
+            type: 'new_message',
+            customer_id,
+            vendor_id,
+            message,
+            sender,
+            timestamp: new Date().toISOString()
+          }
+
+          // Broadcast to all clients in the same room
+          for (const [clientSocket, clientData] of clients.entries()) {
+            if (clientData.room === `${customer_id}_${vendor_id}`) {
+              if (clientSocket.readyState === WebSocket.OPEN) {
+                clientSocket.send(JSON.stringify(messageData))
               }
             }
           }
         } catch (error) {
-          console.error('Error saving message to MongoDB:', error)
+          console.error('Error saving message to PostgreSQL:', error)
           socket.send(JSON.stringify({
             type: 'error',
             message: 'Failed to save message'

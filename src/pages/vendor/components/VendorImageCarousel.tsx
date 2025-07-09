@@ -4,7 +4,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { useVendorImages } from '@/hooks/useVendorImages';
 
 interface VendorImageCarouselProps {
-  vendorId: number;
+  vendorId: string;
   fallbackImages?: string[];
 }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { imageService, VendorImage } from '@/services/imageService';
 
-export const useVendorImages = (vendorId: number) => {
+export const useVendorImages = (vendorId: string) => {
   const [images, setImages] = useState<VendorImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);

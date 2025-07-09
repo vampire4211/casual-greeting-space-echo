@@ -79,8 +79,8 @@ const ChatPage = () => {
               </div>
               
               <ChatWindow
-                customerId={currentUserId}
-                vendorId={selectedChat}
+                customerId={currentUserId.toString()}
+                vendorId={selectedChat.toString()}
                 currentUserType={currentUserType}
               />
             </>

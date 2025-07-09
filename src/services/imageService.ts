@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export interface VendorImage {
-  vendor_id: number;
+  vendor_id: string;
   image_url: string;
   uploaded_at: string;
   title?: string;
@@ -9,9 +9,35 @@ export interface VendorImage {
 }
 
 class ImageService {
-  // Get vendor images (mock data)
-  async getVendorImages(vendorId: number): Promise<VendorImage[]> {
-    // Return mock images
+  // Get vendor images from PostgreSQL
+  async getVendorImages(vendorId: string): Promise<VendorImage[]> {
+    try {
+      const { data, error } = await supabase
+        .from('vendor_images')
+        .select('*')
+        .eq('vendor_id', vendorId)
+        .order('uploaded_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching vendor images:', error);
+        return this.getMockImages(vendorId);
+      }
+
+      return data?.map(img => ({
+        vendor_id: img.vendor_id,
+        image_url: img.image_url,
+        uploaded_at: img.uploaded_at,
+        title: img.title,
+        description: img.description
+      })) || this.getMockImages(vendorId);
+    } catch (error) {
+      console.error('Error fetching vendor images:', error);
+      return this.getMockImages(vendorId);
+    }
+  }
+
+  // Mock images fallback
+  private getMockImages(vendorId: string): VendorImage[] {
     return [
       {
         vendor_id: vendorId,
@@ -37,23 +63,54 @@ class ImageService {
     ];
   }
 
-  // Save image metadata (mock implementation)
-  async saveImageMetadata(vendorId: number, imageUrl: string, title?: string, description?: string): Promise<boolean> {
-    // Mock success - in real implementation this would save to database
-    console.log('Mock: Saving image metadata', { vendorId, imageUrl, title, description });
-    return true;
+  // Save image metadata to PostgreSQL
+  async saveImageMetadata(vendorId: string, imageUrl: string, title?: string, description?: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('vendor_images')
+        .insert({
+          vendor_id: vendorId,
+          image_url: imageUrl,
+          title,
+          description
+        });
+
+      if (error) {
+        console.error('Error saving image metadata:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error saving image metadata:', error);
+      return false;
+    }
   }
 
-  // Delete image metadata (mock implementation)
-  async deleteImageMetadata(vendorId: number, imageUrl: string): Promise<boolean> {
-    // Mock success - in real implementation this would delete from database
-    console.log('Mock: Deleting image metadata', { vendorId, imageUrl });
-    return true;
+  // Delete image metadata from PostgreSQL
+  async deleteImageMetadata(vendorId: string, imageUrl: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('vendor_images')
+        .delete()
+        .eq('vendor_id', vendorId)
+        .eq('image_url', imageUrl);
+
+      if (error) {
+        console.error('Error deleting image metadata:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting image metadata:', error);
+      return false;
+    }
   }
 
-  // Upload image to Supabase Storage and save metadata to MongoDB
+  // Upload image to Supabase Storage and save metadata to PostgreSQL
   async uploadVendorImage(
-    vendorId: number, 
+    vendorId: string, 
     file: File, 
     title?: string, 
     description?: string
@@ -73,7 +130,7 @@ class ImageService {
         .from('vendor-images')
         .getPublicUrl(fileName);
 
-      // Save metadata to MongoDB
+      // Save metadata to PostgreSQL
       const metadataSaved = await this.saveImageMetadata(vendorId, publicUrl, title, description);
 
       if (!metadataSaved) {

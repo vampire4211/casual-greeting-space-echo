@@ -7,8 +7,8 @@ export interface ChatMessage {
 }
 
 export interface ChatSession {
-  customer_id: number;
-  vendor_id: number;
+  customer_id: string;
+  vendor_id: string;
   messages: ChatMessage[];
   started_at: string;
 }
@@ -18,7 +18,7 @@ class ChatService {
   private messageHandlers: ((message: ChatMessage) => void)[] = [];
 
   // Connect to WebSocket for real-time chat
-  connect(customerId: number, vendorId: number) {
+  connect(customerId: string, vendorId: string) {
     const wsUrl = `wss://mwjrrhluqiuchczgzzld.supabase.co/functions/v1/socket-chat`;
     
     this.socket = new WebSocket(wsUrl);
@@ -52,7 +52,7 @@ class ChatService {
   }
 
   // Join a chat room
-  joinRoom(customerId: number, vendorId: number) {
+  joinRoom(customerId: string, vendorId: string) {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify({
         type: 'join_room',
@@ -63,7 +63,11 @@ class ChatService {
   }
 
   // Send a message
-  sendMessage(customerId: number, vendorId: number, message: string, sender: "customer" | "vendor") {
+  sendMessage(customerId: string, vendorId: string, message: string, sender: "customer" | "vendor") {
+    // Save message to database
+    this.saveMessage(customerId, vendorId, message, sender);
+    
+    // Send via WebSocket for real-time updates
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify({
         type: 'send_message',
@@ -72,6 +76,26 @@ class ChatService {
         message,
         sender
       }));
+    }
+  }
+
+  // Save message to PostgreSQL
+  async saveMessage(customerId: string, vendorId: string, message: string, sender: "customer" | "vendor") {
+    try {
+      const { error } = await supabase
+        .from('chat_messages')
+        .insert({
+          customer_id: customerId,
+          vendor_id: vendorId,
+          sender,
+          message
+        });
+
+      if (error) {
+        console.error('Error saving message:', error);
+      }
+    } catch (error) {
+      console.error('Error saving message:', error);
     }
   }
 
@@ -85,9 +109,34 @@ class ChatService {
     this.messageHandlers = this.messageHandlers.filter(h => h !== handler);
   }
 
-  // Get chat history (mock data)
-  async getChatHistory(customerId: number, vendorId: number): Promise<ChatMessage[]> {
-    // Return mock conversation
+  // Get chat history from PostgreSQL
+  async getChatHistory(customerId: string, vendorId: string): Promise<ChatMessage[]> {
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('customer_id', customerId)
+        .eq('vendor_id', vendorId)
+        .order('timestamp', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching chat history:', error);
+        return this.getMockChatHistory();
+      }
+
+      return data?.map(msg => ({
+        sender: msg.sender as "customer" | "vendor",
+        message: msg.message,
+        timestamp: msg.timestamp
+      })) || this.getMockChatHistory();
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      return this.getMockChatHistory();
+    }
+  }
+
+  // Mock chat history fallback
+  private getMockChatHistory(): ChatMessage[] {
     return [
       {
         sender: 'vendor',
