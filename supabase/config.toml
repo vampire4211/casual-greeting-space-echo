@@ -39,11 +39,5 @@ enable_confirmations = false
 enabled = true
 port = 54326
 
-[functions.mongodb-chat]
-verify_jwt = false
-
-[functions.mongodb-images]
-verify_jwt = false
-
 [functions.socket-chat]
 verify_jwt = false

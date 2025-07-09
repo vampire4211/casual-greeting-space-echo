@@ -9,65 +9,46 @@ export interface VendorImage {
 }
 
 class ImageService {
-  // Get all images for a vendor from MongoDB
+  // Get vendor images (mock data)
   async getVendorImages(vendorId: number): Promise<VendorImage[]> {
-    try {
-      const response = await fetch(`https://mwjrrhluqiuchczgzzld.supabase.co/functions/v1/mongodb-images?vendor_id=${vendorId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13anJyaGx1cWl1Y2hjemd6emxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5NjQ2NzUsImV4cCI6MjA2NjU0MDY3NX0.edj3Fr98TQJEeOalOntC4FUZgsrm0QvJXsf5Bz3zB9Y`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch vendor images');
-      
-      const data = await response.json();
-      return data.images || [];
-    } catch (error) {
-      console.error('Error fetching vendor images:', error);
-      return [];
-    }
+    // Return mock images
+    return [
+      {
+        vendor_id: vendorId,
+        image_url: '/lovable-uploads/1b617e92-9eed-43c3-930b-89645adc6360.png',
+        uploaded_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        title: 'Wedding Photography',
+        description: 'Beautiful wedding ceremony shots'
+      },
+      {
+        vendor_id: vendorId,
+        image_url: '/lovable-uploads/3a0f2692-b04e-4871-bc8b-32f28d04b408.png',
+        uploaded_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+        title: 'Portrait Session',
+        description: 'Professional portrait photography'
+      },
+      {
+        vendor_id: vendorId,
+        image_url: '/lovable-uploads/845ac0b0-e94e-4bd1-a2aa-1d4cdf30190f.png',
+        uploaded_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+        title: 'Event Coverage',
+        description: 'Corporate event photography'
+      }
+    ];
   }
 
-  // Save image metadata to MongoDB
+  // Save image metadata (mock implementation)
   async saveImageMetadata(vendorId: number, imageUrl: string, title?: string, description?: string): Promise<boolean> {
-    try {
-      const { data, error } = await supabase.functions.invoke('mongodb-images', {
-        body: {
-          vendor_id: vendorId,
-          image_url: imageUrl,
-          title,
-          description
-        }
-      });
-
-      if (error) throw error;
-      
-      return data.success;
-    } catch (error) {
-      console.error('Error saving image metadata:', error);
-      return false;
-    }
+    // Mock success - in real implementation this would save to database
+    console.log('Mock: Saving image metadata', { vendorId, imageUrl, title, description });
+    return true;
   }
 
-  // Delete image metadata from MongoDB
+  // Delete image metadata (mock implementation)
   async deleteImageMetadata(vendorId: number, imageUrl: string): Promise<boolean> {
-    try {
-      const { data, error } = await supabase.functions.invoke('mongodb-images', {
-        body: {
-          vendor_id: vendorId,
-          image_url: imageUrl
-        }
-      });
-
-      if (error) throw error;
-      
-      return data.success;
-    } catch (error) {
-      console.error('Error deleting image metadata:', error);
-      return false;
-    }
+    // Mock success - in real implementation this would delete from database
+    console.log('Mock: Deleting image metadata', { vendorId, imageUrl });
+    return true;
   }
 
   // Upload image to Supabase Storage and save metadata to MongoDB

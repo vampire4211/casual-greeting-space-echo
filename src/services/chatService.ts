@@ -85,42 +85,26 @@ class ChatService {
     this.messageHandlers = this.messageHandlers.filter(h => h !== handler);
   }
 
-  // Get chat history from MongoDB (with fallback)
+  // Get chat history (mock data)
   async getChatHistory(customerId: number, vendorId: number): Promise<ChatMessage[]> {
-    try {
-      const response = await fetch(`https://mwjrrhluqiuchczgzzld.supabase.co/functions/v1/mongodb-chat?customer_id=${customerId}&vendor_id=${vendorId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13anJyaGx1cWl1Y2hjemd6emxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5NjQ2NzUsImV4cCI6MjA2NjU0MDY3NX0.edj3Fr98TQJEeOalOntC4FUZgsrm0QvJXsf5Bz3zB9Y`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        console.warn('MongoDB chat service unavailable, using fallback');
-        // Return some mock messages as fallback
-        return [
-          {
-            sender: 'vendor',
-            message: 'Hello! How can I help you today?',
-            timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString()
-          }
-        ];
+    // Return mock conversation
+    return [
+      {
+        sender: 'vendor',
+        message: 'Hello! How can I help you today?',
+        timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString()
+      },
+      {
+        sender: 'customer',
+        message: 'Hi, I was interested in your photography services.',
+        timestamp: new Date(Date.now() - 3 * 60 * 1000).toISOString()
+      },
+      {
+        sender: 'vendor',
+        message: 'Great! I would love to help with your photography needs. What type of event are you planning?',
+        timestamp: new Date(Date.now() - 1 * 60 * 1000).toISOString()
       }
-      
-      const data = await response.json();
-      return data.chat?.messages || [];
-    } catch (error) {
-      console.error('Error fetching chat history:', error);
-      // Return fallback messages if MongoDB is not available
-      return [
-        {
-          sender: 'vendor',
-          message: 'Hello! How can I help you today?',
-          timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString()
-        }
-      ];
-    }
+    ];
   }
 
   // Disconnect from WebSocket
