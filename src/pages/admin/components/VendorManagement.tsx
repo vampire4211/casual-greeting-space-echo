@@ -13,7 +13,7 @@ const VendorManagement = () => {
     name: vendor.business_name || vendor.vendor_name || 'Unknown Vendor',
     category: vendor.categories?.[0] || 'Unknown',
     status: 'Active',
-    rating: vendor.vendor_details?.[0]?.overall_gr || 4.5,
+    rating: vendor.rating || 4.5,
     joinDate: new Date(vendor.created_at || '').toLocaleDateString()
   }));
 

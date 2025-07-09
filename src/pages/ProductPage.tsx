@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { supabase } from '@/integrations/supabase/client';
-import { VendorWithDetails } from '@/hooks/useVendors';
+import { Vendor } from '@/hooks/useVendors';
 import VendorHeader from './vendor/components/VendorHeader';
 import VendorImageCarousel from './vendor/components/VendorImageCarousel';
 import VendorServices from './vendor/components/VendorServices';
@@ -17,7 +16,7 @@ import BookingDialog from './vendor/components/BookingDialog';
 const ProductPage = () => {
   const { id } = useParams();
   const [showBookingDialog, setShowBookingDialog] = useState(false);
-  const [vendor, setVendor] = useState<VendorWithDetails | null>(null);
+  const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,47 +24,14 @@ const ProductPage = () => {
       if (!id) return;
       
       try {
-        // Get vendor data with details
-        const { data, error } = await supabase
-          .from('vendor_details')
-          .select(`
-            *,
-            vendors!inner (
-              id,
-              vendor_name,
-              business_name,
-              email,
-              phone_number,
-              address,
-              categories,
-              created_at
-            )
-          `)
-          .limit(1)
-          .single();
-
-        if (error) throw error;
+        const response = await fetch(`http://localhost:8000/api/vendors/${id}/`);
         
-        // Transform to match expected format
-        const transformedVendor = {
-          id: data.vendors.id,
-          vendor_name: data.vendors.vendor_name,
-          business_name: data.vendors.business_name,
-          email: data.vendors.email,
-          phone_number: data.vendors.phone_number,
-          address: data.vendors.address,
-          categories: data.vendors.categories,
-          created_at: data.vendors.created_at,
-          user_id: null,
-          age: null,
-          gender: null,
-          aadhar: null,
-          pan: null,
-          gst: null,
-          vendor_details: [data]
-        };
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
-        setVendor(transformedVendor);
+        const data = await response.json();
+        setVendor(data.vendor);
       } catch (err) {
         console.error('Error fetching vendor:', err);
       } finally {
@@ -115,8 +81,8 @@ const ProductPage = () => {
     businessName: vendor.business_name || vendor.vendor_name || 'Unknown Vendor',
     categories: vendor.categories || [],
     location: vendor.address || 'Location not specified',
-    rating: vendor.vendor_details?.[0]?.overall_gr || 4.5,
-    reviewCount: vendor.vendor_details?.[0]?.no_of_images || 50,
+    rating: vendor.rating || 4.5,
+    reviewCount: vendor.total_reviews || 50,
     featured: true,
     phone: vendor.phone_number || '+91-XXXXXXXXXX',
     email: vendor.email,
@@ -157,7 +123,7 @@ const ProductPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
               <VendorImageCarousel 
-                vendorId={vendor.id} 
+                vendorId={vendor.id.toString()} 
                 fallbackImages={transformedVendor.images} 
               />
               <VendorServices categories={transformedVendor.categories} />
@@ -170,7 +136,7 @@ const ProductPage = () => {
             </div>
 
             <VendorSidebar
-              vendorId={vendor.id}
+              vendorId={vendor.id.toString()}
               phone={transformedVendor.phone}
               email={transformedVendor.email}
               location={transformedVendor.location}

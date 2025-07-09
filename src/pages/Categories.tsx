@@ -16,15 +16,15 @@ const Categories = () => {
   const { categories } = useCategories();
 
   // Transform vendors data to match the expected format
-  const transformedVendors = vendors.map((vendor, index) => ({
-    id: index + 1, // Convert to number for compatibility
+  const transformedVendors = vendors.map((vendor) => ({
+    id: vendor.id,
     name: vendor.business_name || vendor.vendor_name || 'Unknown Vendor',
     category: vendor.categories || [],
-    location: vendor.address?.split(',')[0] || 'Unknown Location',
-    rating: vendor.vendor_details?.[0]?.overall_gr || 4.5,
-    reviews: vendor.vendor_details?.[0]?.no_of_images || Math.floor(Math.random() * 100) + 10,
-    price: `₹${Math.floor(Math.random() * 50000) + 10000} - ₹${Math.floor(Math.random() * 100000) + 50000}`,
-    image: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000000) + 1000000000000}?w=400&h=300&fit=crop`,
+    location: vendor.city || vendor.address?.split(',')[0] || 'Unknown Location',
+    rating: vendor.rating || 4.5,
+    reviews: vendor.total_reviews || Math.floor(Math.random() * 100) + 10,
+    price: vendor.price_range || `₹${Math.floor(Math.random() * 50000) + 10000} - ₹${Math.floor(Math.random() * 100000) + 50000}`,
+    image: vendor.images?.[0] || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000000) + 1000000000000}?w=400&h=300&fit=crop`,
     featured: Math.random() > 0.7
   }));
 

@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Check if user is a vendor (mock logic - would be from auth context)
-  const isVendor = location.pathname.includes('/vendor') || localStorage.getItem('userType') === 'vendor';
+  const { user, logout, isAuthenticated, isVendor } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +20,12 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    toast.success('Logged out successfully');
+    navigate('/');
+  };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-sm ${
@@ -69,15 +75,25 @@ const Navbar = () => {
 
         {/* Desktop Buttons */}
         <div className="hidden lg:flex items-center gap-3">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/signin')}
-          >
-            Sign In
-          </Button>
-          <Button onClick={() => navigate('/signup')}>
-            Sign Up
-          </Button>
+          {isAuthenticated ? (
+            <>
+              <span className="text-sm text-muted-foreground">
+                Welcome, {user?.first_name || user?.username}
+              </span>
+              <Button variant="outline" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" onClick={() => navigate('/auth')}>
+                Sign In
+              </Button>
+              <Button onClick={() => navigate('/auth')}>
+                Sign Up
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}

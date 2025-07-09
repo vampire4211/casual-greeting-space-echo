@@ -66,18 +66,18 @@ WSGI_APPLICATION = 'event_sathi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME', default='event_sathi_db'),
-        'USER': env('DB_USER', default='postgres'),
-        'PASSWORD': env('DB_PASSWORD', default='password'),
-        'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env('DB_PORT', default='5432'),
+        'NAME': 'postgres',
+        'USER': 'postgres.mwjrrhluqiuchczgzzld',
+        'PASSWORD': env('SUPABASE_DB_PASSWORD', default='your_supabase_password'),
+        'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
+        'PORT': '6543',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
 
-MONGODB_SETTINGS = {
-    'host': env('MONGODB_HOST', default='mongodb://localhost:27017/'),
-    'db_name': env('MONGODB_DB', default='event_sathi_media'),
-}
+# Remove MongoDB settings as we're using Supabase PostgreSQL for everything
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -124,9 +124,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://026bf7d1-0d8a-4c9b-9693-26a3281c5954.lovableproject.com",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
-
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'

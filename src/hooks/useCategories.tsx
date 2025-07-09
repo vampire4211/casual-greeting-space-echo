@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Tables } from '@/integrations/supabase/types';
+import { categoriesAPI } from '@/services/api';
 
-type Category = Tables<'categories'>;
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+  subcategories: any[];
+  created_at: string;
+}
 
 export const useCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -12,16 +18,13 @@ export const useCategories = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
-
-      if (error) throw error;
-
-      setCategories(data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(null);
+      
+      const response = await categoriesAPI.getCategories();
+      setCategories(response.data.categories || []);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.error || 'Failed to fetch categories';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

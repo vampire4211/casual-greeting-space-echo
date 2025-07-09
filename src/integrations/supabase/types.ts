@@ -14,28 +14,85 @@ export type Database = {
   }
   public: {
     Tables: {
-      booking_matrix: {
+      admin_homepage_images: {
         Row: {
-          customer_id: string
-          data: Json | null
+          alt_text: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_data: string
+          image_name: string
+          image_type: string
+          is_active: boolean | null
+          section: string
+          slot_number: number
+          title: string | null
+          updated_at: string | null
+          uploaded_by: string | null
         }
         Insert: {
-          customer_id: string
-          data?: Json | null
+          alt_text?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_data: string
+          image_name: string
+          image_type: string
+          is_active?: boolean | null
+          section: string
+          slot_number: number
+          title?: string | null
+          updated_at?: string | null
+          uploaded_by?: string | null
         }
         Update: {
-          customer_id?: string
-          data?: Json | null
+          alt_text?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_data?: string
+          image_name?: string
+          image_type?: string
+          is_active?: boolean | null
+          section?: string
+          slot_number?: number
+          title?: string | null
+          updated_at?: string | null
+          uploaded_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "booking_matrix_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: true
+            foreignKeyName: "admin_homepage_images_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["id"]
           },
         ]
+      }
+      admin_images: {
+        Row: {
+          created_at: string
+          id: number
+          image_data: string | null
+          section: string
+          slot: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          image_data?: string | null
+          section: string
+          slot?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          image_data?: string | null
+          section?: string
+          slot?: number | null
+        }
+        Relationships: []
       }
       categories: {
         Row: {
@@ -94,31 +151,9 @@ export type Database = {
           },
         ]
       }
-      chat_matrix: {
-        Row: {
-          customer_id: string
-          data: Json | null
-        }
-        Insert: {
-          customer_id: string
-          data?: Json | null
-        }
-        Update: {
-          customer_id?: string
-          data?: Json | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_matrix_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: true
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       chat_messages: {
         Row: {
+          chat_room_id: string | null
           created_at: string
           customer_id: string
           id: string
@@ -128,6 +163,7 @@ export type Database = {
           vendor_id: string
         }
         Insert: {
+          chat_room_id?: string | null
           created_at?: string
           customer_id: string
           id?: string
@@ -137,6 +173,7 @@ export type Database = {
           vendor_id: string
         }
         Update: {
+          chat_room_id?: string | null
           created_at?: string
           customer_id?: string
           id?: string
@@ -146,6 +183,13 @@ export type Database = {
           vendor_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "chat_messages_chat_room_id_fkey"
+            columns: ["chat_room_id"]
+            isOneToOne: false
+            referencedRelation: "customer_vendor_chats"
+            referencedColumns: ["chat_room_id"]
+          },
           {
             foreignKeyName: "chat_messages_customer_id_fkey"
             columns: ["customer_id"]
@@ -190,6 +234,175 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_vendor_bookings: {
+        Row: {
+          booking_date: string
+          booking_status: string | null
+          created_at: string | null
+          customer_id: string
+          event_date: string | null
+          event_type: string | null
+          id: string
+          notes: string | null
+          package_details: Json | null
+          total_amount: number | null
+          updated_at: string | null
+          vendor_id: string
+        }
+        Insert: {
+          booking_date: string
+          booking_status?: string | null
+          created_at?: string | null
+          customer_id: string
+          event_date?: string | null
+          event_type?: string | null
+          id?: string
+          notes?: string | null
+          package_details?: Json | null
+          total_amount?: number | null
+          updated_at?: string | null
+          vendor_id: string
+        }
+        Update: {
+          booking_date?: string
+          booking_status?: string | null
+          created_at?: string | null
+          customer_id?: string
+          event_date?: string | null
+          event_type?: string | null
+          id?: string
+          notes?: string | null
+          package_details?: Json | null
+          total_amount?: number | null
+          updated_at?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_vendor_bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_vendor_bookings_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_vendor_chats: {
+        Row: {
+          chat_room_id: string | null
+          created_at: string | null
+          customer_id: string
+          id: string
+          is_active: boolean | null
+          last_message_at: string | null
+          vendor_id: string
+        }
+        Insert: {
+          chat_room_id?: string | null
+          created_at?: string | null
+          customer_id: string
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          vendor_id: string
+        }
+        Update: {
+          chat_room_id?: string | null
+          created_at?: string | null
+          customer_id?: string
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_vendor_chats_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_vendor_chats_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_vendor_reviews: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          customer_id: string
+          id: string
+          is_verified: boolean | null
+          rating: number
+          response_from_vendor: string | null
+          review_images: Json | null
+          review_text: string | null
+          updated_at: string | null
+          vendor_id: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          customer_id: string
+          id?: string
+          is_verified?: boolean | null
+          rating: number
+          response_from_vendor?: string | null
+          review_images?: Json | null
+          review_text?: string | null
+          updated_at?: string | null
+          vendor_id: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          customer_id?: string
+          id?: string
+          is_verified?: boolean | null
+          rating?: number
+          response_from_vendor?: string | null
+          review_images?: Json | null
+          review_text?: string | null
+          updated_at?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_vendor_reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "customer_vendor_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_vendor_reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_vendor_reviews_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
         ]
@@ -308,47 +521,48 @@ export type Database = {
           },
         ]
       }
-      reply_matrix: {
+      vendor_category_images: {
         Row: {
-          customer_id: string
-          data: Json | null
-        }
-        Insert: {
-          customer_id: string
-          data?: Json | null
-        }
-        Update: {
-          customer_id?: string
-          data?: Json | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "reply_matrix_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: true
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      review_matrix: {
-        Row: {
-          reviews: Json | null
+          category_name: string
+          created_at: string | null
+          id: string
+          image_data: string
+          image_name: string
+          image_order: number | null
+          image_type: string
+          is_featured: boolean | null
+          updated_at: string | null
           vendor_id: string
         }
         Insert: {
-          reviews?: Json | null
+          category_name: string
+          created_at?: string | null
+          id?: string
+          image_data: string
+          image_name: string
+          image_order?: number | null
+          image_type: string
+          is_featured?: boolean | null
+          updated_at?: string | null
           vendor_id: string
         }
         Update: {
-          reviews?: Json | null
+          category_name?: string
+          created_at?: string | null
+          id?: string
+          image_data?: string
+          image_name?: string
+          image_order?: number | null
+          image_type?: string
+          is_featured?: boolean | null
+          updated_at?: string | null
           vendor_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "review_matrix_vendor_id_fkey"
+            foreignKeyName: "vendor_category_images_vendor_id_fkey"
             columns: ["vendor_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
@@ -470,8 +684,10 @@ export type Database = {
           aadhar: string | null
           address: string | null
           age: number | null
+          availability_info: Json | null
+          business_info: Json | null
           business_name: string | null
-          categories: string[] | null
+          categories: Json | null
           created_at: string | null
           email: string
           gender: string | null
@@ -479,6 +695,7 @@ export type Database = {
           id: string
           pan: string | null
           phone_number: string | null
+          pricing_info: Json | null
           user_id: string | null
           vendor_name: string | null
         }
@@ -486,8 +703,10 @@ export type Database = {
           aadhar?: string | null
           address?: string | null
           age?: number | null
+          availability_info?: Json | null
+          business_info?: Json | null
           business_name?: string | null
-          categories?: string[] | null
+          categories?: Json | null
           created_at?: string | null
           email: string
           gender?: string | null
@@ -495,6 +714,7 @@ export type Database = {
           id?: string
           pan?: string | null
           phone_number?: string | null
+          pricing_info?: Json | null
           user_id?: string | null
           vendor_name?: string | null
         }
@@ -502,8 +722,10 @@ export type Database = {
           aadhar?: string | null
           address?: string | null
           age?: number | null
+          availability_info?: Json | null
+          business_info?: Json | null
           business_name?: string | null
-          categories?: string[] | null
+          categories?: Json | null
           created_at?: string | null
           email?: string
           gender?: string | null
@@ -511,33 +733,11 @@ export type Database = {
           id?: string
           pan?: string | null
           phone_number?: string | null
+          pricing_info?: Json | null
           user_id?: string | null
           vendor_name?: string | null
         }
         Relationships: []
-      }
-      visiting_matrix: {
-        Row: {
-          customer_id: string
-          data: Json | null
-        }
-        Insert: {
-          customer_id: string
-          data?: Json | null
-        }
-        Update: {
-          customer_id?: string
-          data?: Json | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "visiting_matrix_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: true
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-        ]
       }
     }
     Views: {
