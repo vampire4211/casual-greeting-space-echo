@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_images: {
+        Row: {
+          created_at: string
+          id: number
+          image_data: string | null
+          section: string
+          slot: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          image_data?: string | null
+          section: string
+          slot?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          image_data?: string | null
+          section?: string
+          slot?: number | null
+        }
+        Relationships: []
+      }
       booking_matrix: {
         Row: {
           customer_id: string
