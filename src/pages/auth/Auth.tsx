@@ -50,11 +50,11 @@ const AuthPage = () => {
     e.preventDefault();
     
     const result = await login(loginData.email, loginData.password);
-    if (result.success) {
+    if (result.data?.user && !result.error) {
       toast.success('Login successful!');
       navigate('/');
     } else {
-      toast.error(result.error || 'Login failed');
+      toast.error(result.error?.message || 'Login failed');
     }
   };
 
@@ -66,12 +66,12 @@ const AuthPage = () => {
       return;
     }
 
-    const result = await register(registerData);
-    if (result.success) {
-      toast.success('Registration successful!');
+    const result = await register(registerData.email, registerData.password, registerData);
+    if (result.data?.user && !result.error) {
+      toast.success('Registration successful! Please check your email to verify your account.');
       navigate('/');
     } else {
-      toast.error(result.error || 'Registration failed');
+      toast.error(result.error?.message || 'Registration failed');
     }
   };
 
