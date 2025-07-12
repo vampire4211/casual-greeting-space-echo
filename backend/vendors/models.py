@@ -43,6 +43,21 @@ class VendorImage(models.Model):
     class Meta:
         ordering = ['order', 'created_at']
 
+class VendorCategoryImages(models.Model):
+    vendor = models.ForeignKey(VendorProfile, on_delete=models.CASCADE, related_name='category_images')
+    category_name = models.CharField(max_length=100)
+    image_data = models.BinaryField()
+    image_name = models.CharField(max_length=255)
+    image_type = models.CharField(max_length=50)
+    image_order = models.IntegerField(default=0)
+    is_featured = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['image_order', 'created_at']
+        unique_together = ['vendor', 'category_name', 'image_order']
+
 class VendorReview(models.Model):
     vendor = models.ForeignKey(VendorProfile, on_delete=models.CASCADE, related_name='reviews')
     customer = models.ForeignKey('accounts.CustomerProfile', on_delete=models.CASCADE)

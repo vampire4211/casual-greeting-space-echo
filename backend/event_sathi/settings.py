@@ -25,11 +25,6 @@ INSTALLED_APPS = [
     'accounts',
     'vendors',
     'categories',
-    'events',
-    'bookings',
-    'payments',
-    'chats',
-    'media_storage',
 ]
 
 MIDDLEWARE = [
@@ -127,4 +122,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://026bf7d1-0d8a-4c9b-9693-26a3281c5954.lovableproject.com",
 ]
 
+# Allow all origins in development
 CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+# Custom user model
+AUTH_USER_MODEL = 'accounts.User'

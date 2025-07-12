@@ -1,73 +1,162 @@
-# Welcome to your Lovable project
+# Event Sathi - Event Management Platform
 
-## Project info
+A full-stack event management platform connecting customers with vendors for seamless event planning and execution.
 
-**URL**: https://lovable.dev/projects/fb0c2a86-27a0-4dbd-bc08-73d9d440c766
+## 🌟 Features
 
-## How can I edit this code?
+- **Vendor Discovery**: Browse and filter vendors by category and location
+- **Real-time Chat**: Direct communication between customers and vendors
+- **Image Management**: Upload and manage vendor portfolios and admin content
+- **Authentication**: Secure login for customers, vendors, and admins
+- **Dashboard**: Comprehensive vendor dashboard for business management
+- **Responsive Design**: Modern UI that works on all devices
 
-There are several ways of editing your application.
+## 🚀 Tech Stack
 
-**Use Lovable**
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for fast development
+- **Tailwind CSS** for styling
+- **Shadcn/ui** for UI components
+- **React Query** for data fetching
+- **React Hook Form** for form management
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fb0c2a86-27a0-4dbd-bc08-73d9d440c766) and start prompting.
+### Backend
+- **Django 4.2** with Django REST Framework
+- **PostgreSQL** (via Supabase)
+- **Token Authentication**
+- **CORS enabled** for frontend integration
 
-Changes made via Lovable will be committed automatically to this repo.
+### Infrastructure
+- **Supabase** for database and real-time features
+- **Lovable** for development and deployment
 
-**Use your preferred IDE**
+## 🚀 Quick Start
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js 16+ and npm/yarn
+- Python 3.8+
+- Supabase account
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Frontend Setup
 
-Follow these steps:
+```bash
+# Install dependencies
+npm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Backend Setup
 
-**Use GitHub Codespaces**
+```bash
+# Navigate to backend directory
+cd backend
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Run automated setup
+python setup.py
 
-## What technologies are used for this project?
+# Or manual setup:
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
+```
 
-This project is built with:
+The backend API will be available at `http://localhost:8000`
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📁 Project Structure
 
-## How can I deploy this project?
+```
+event-sathi/
+├── src/                          # Frontend React application
+│   ├── components/               # Reusable UI components
+│   │   ├── auth/                # Authentication components
+│   │   ├── home/                # Homepage components
+│   │   ├── layout/              # Layout components (Navbar, Footer)
+│   │   └── ui/                  # Shadcn UI components
+│   ├── pages/                   # Page components
+│   │   ├── auth/                # Authentication pages
+│   │   ├── admin/               # Admin dashboard
+│   │   ├── vendor/              # Vendor pages
+│   │   └── home/                # Homepage
+│   ├── hooks/                   # Custom React hooks
+│   ├── services/                # API services and utilities
+│   └── integrations/            # Supabase integration
+├── backend/                     # Django backend
+│   ├── event_sathi/            # Django project settings
+│   ├── accounts/               # User authentication & profiles
+│   ├── vendors/                # Vendor management
+│   ├── categories/             # Category management
+│   └── requirements.txt        # Python dependencies
+├── supabase/                   # Supabase configuration
+│   ├── migrations/             # Database migrations
+│   └── functions/              # Edge functions
+└── public/                     # Static assets
+```
 
-Simply open [Lovable](https://lovable.dev/projects/fb0c2a86-27a0-4dbd-bc08-73d9d440c766) and click on Share -> Publish.
+## 🔗 API Integration
 
-## Can I connect a custom domain to my Lovable project?
+The frontend and backend are integrated through:
 
-Yes, you can!
+### REST API Endpoints
+- **Authentication**: `/api/auth/`
+- **Vendors**: `/api/vendors/`
+- **Categories**: `/api/categories/`
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Frontend Services
+- `src/services/api.ts` - Axios configuration
+- `src/hooks/useAuth.tsx` - Authentication hook
+- `src/hooks/useVendors.tsx` - Vendor data management
+- `src/hooks/useCategories.tsx` - Category management
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🚢 Deployment
+
+### Lovable Deployment
+1. Connect your GitHub repository
+2. Push changes to trigger automatic deployment
+3. Configure environment variables in Lovable dashboard
+
+### Manual Deployment
+
+#### Frontend
+```bash
+npm run build
+# Deploy dist/ folder to your static hosting service
+```
+
+#### Backend
+```bash
+# Set environment variables
+export DEBUG=False
+export SECRET_KEY=your-production-secret-key
+
+# Collect static files
+python manage.py collectstatic
+
+# Run with gunicorn
+gunicorn event_sathi.wsgi:application
+```
+
+## 🧪 Development Workflow
+
+### Adding New Features
+
+1. **Backend**: Create Django models, views, and serializers
+2. **Database**: Run migrations to update schema
+3. **Frontend**: Create React components and hooks
+4. **Integration**: Connect frontend to backend APIs
+5. **Testing**: Test both frontend and backend functionality
+
+## 📞 Support
+
+For questions or support:
+- Create an issue in the GitHub repository
+- Check the backend README for API documentation
+- Review the component documentation in `src/components/`
+
+---
+
+Built with ❤️ using React, Django, and Supabase

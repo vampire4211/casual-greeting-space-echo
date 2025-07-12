@@ -39,3 +39,4 @@ class VendorProfile(models.Model):
     subscription_expires = models.DateTimeField(null=True, blank=True)
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     total_reviews = models.IntegerField(default=0)
+    categories = models.JSONField(default=list)

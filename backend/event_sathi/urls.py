@@ -9,11 +9,6 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
     path('api/vendors/', include('vendors.urls')),
     path('api/categories/', include('categories.urls')),
-    path('api/events/', include('events.urls')),
-    path('api/bookings/', include('bookings.urls')),
-    path('api/payments/', include('payments.urls')),
-    path('api/chats/', include('chats.urls')),
-    path('api/media/', include('media_storage.urls')),
 ]
 
 if settings.DEBUG:

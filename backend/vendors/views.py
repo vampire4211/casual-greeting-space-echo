@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
 from accounts.models import VendorProfile
 from categories.models import Category
-from .models import VendorCategoryImages, VendorService, VendorPackage
+from .models import VendorService, VendorPackage, VendorImage, VendorCategoryImages
 import json
 import base64
 import random
