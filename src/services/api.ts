@@ -12,9 +12,9 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('access_token');
     if (token) {
-      config.headers.Authorization = `Token ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -26,12 +26,37 @@ api.interceptors.request.use(
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-      window.location.href = '/auth';
+      // Try to refresh token
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        try {
+          const response = await axios.post('http://localhost:8000/api/token/refresh/', {
+            refresh: refreshToken
+          });
+          
+          localStorage.setItem('access_token', response.data.access);
+          if (response.data.refresh) {
+            localStorage.setItem('refresh_token', response.data.refresh);
+          }
+          
+          // Retry original request
+          error.config.headers.Authorization = `Bearer ${response.data.access}`;
+          return axios.request(error.config);
+        } catch (refreshError) {
+          // Refresh failed, redirect to login
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user');
+          window.location.href = '/signin';
+        }
+      } else {
+        // No refresh token, redirect to login
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+        window.location.href = '/signin';
+      }
     }
     return Promise.reject(error);
   }
@@ -40,8 +65,8 @@ api.interceptors.response.use(
 // API endpoints
 export const authAPI = {
   register: (userData: any) => api.post('/auth/register/', userData),
-  login: (credentials: any) => api.post('/auth/login/', credentials),
-  logout: () => api.post('/auth/logout/'),
+  login: (credentials: any) => axios.post('http://localhost:8000/api/token/', credentials),
+  refreshToken: (refresh: string) => axios.post('http://localhost:8000/api/token/refresh/', { refresh }),
   getProfile: () => api.get('/auth/profile/'),
   updateVendorCategories: (categories: string[]) => 
     api.post('/auth/vendor/categories/', { categories }),
@@ -70,26 +95,60 @@ export const categoriesAPI = {
     api.get(`/categories/download-image/${imageId}/`, { responseType: 'blob' }),
 };
 
-export const bookingsAPI = {
-  createBooking: (bookingData: any) => api.post('/bookings/', bookingData),
-  getBookings: () => api.get('/bookings/'),
-  updateBooking: (bookingId: number, data: any) => 
-    api.patch(`/bookings/${bookingId}/`, data),
+export const eventsAPI = {
+  getEvents: (params?: any) => api.get('/events/', { params }),
+  createEvent: (eventData: any) => api.post('/events/', eventData),
+  getEvent: (eventId: number) => api.get(`/events/${eventId}/`),
+  updateEvent: (eventId: number, data: any) => api.put(`/events/${eventId}/`, data),
+  deleteEvent: (eventId: number) => api.delete(`/events/${eventId}/`),
+  getMyEvents: () => api.get('/events/my-events/'),
 };
 
-export const reviewsAPI = {
-  createReview: (reviewData: any) => api.post('/reviews/', reviewData),
-  getVendorReviews: (vendorId: number) => 
-    api.get(`/reviews/vendor/${vendorId}/`),
+export const bookingsAPI = {
+  getBookings: () => api.get('/bookings/'),
+  createBooking: (bookingData: any) => api.post('/bookings/', bookingData),
+  getBooking: (bookingId: number) => api.get(`/bookings/${bookingId}/`),
+  updateBooking: (bookingId: number, data: any) => 
+    api.put(`/bookings/${bookingId}/`, data),
+  getBookingMessages: (bookingId: number) => 
+    api.get(`/bookings/${bookingId}/messages/`),
+  sendBookingMessage: (bookingId: number, message: string) => 
+    api.post(`/bookings/${bookingId}/messages/`, { message }),
+};
+
+export const paymentsAPI = {
+  getPayments: () => api.get('/payments/'),
+  createPayment: (paymentData: any) => api.post('/payments/', paymentData),
+  getPayment: (paymentId: number) => api.get(`/payments/${paymentId}/`),
+  processPayment: (paymentId: number, data: any) => 
+    api.post(`/payments/${paymentId}/process/`, data),
 };
 
 export const chatAPI = {
   getChats: () => api.get('/chats/'),
-  createChat: (vendorId: number) => api.post('/chats/', { vendor_id: vendorId }),
-  getChatMessages: (chatRoomId: string) => 
-    api.get(`/chats/${chatRoomId}/messages/`),
-  sendMessage: (chatRoomId: string, message: string) => 
-    api.post(`/chats/${chatRoomId}/messages/`, { message }),
+  createChat: (participantId: number, participantType: string) => 
+    api.post('/chats/', { participant_id: participantId, participant_type: participantType }),
+  getChatMessages: (chatId: number) => 
+    api.get(`/chats/${chatId}/messages/`),
+  sendMessage: (chatId: number, message: string) => 
+    api.post(`/chats/${chatId}/messages/`, { message }),
+};
+
+export const mediaAPI = {
+  uploadFile: (formData: FormData) => 
+    api.post('/media/upload/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }),
+  getFiles: () => api.get('/media/'),
+  deleteFile: (fileId: number) => api.delete(`/media/${fileId}/`),
+};
+
+export const adminAPI = {
+  getDashboardStats: () => api.get('/admin/dashboard-stats/'),
+  getUsers: () => api.get('/admin/users/'),
+  getVendors: () => api.get('/admin/vendors/'),
+  updateUserStatus: (userId: number, status: string) => 
+    api.patch(`/admin/users/${userId}/`, { status }),
 };
 
 export default api;

@@ -1,44 +1,45 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { authAPI } from '@/services/api';
 
 export const useAuth = () => {
   const [user, setUser] = useState<any>(null);
-  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    // Check for existing token and user
+    const token = localStorage.getItem('access_token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      setUser(JSON.parse(userData));
+    }
+    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (data.user) {
-        setUser(data.user);
-        setSession(data.session);
+      const response = await authAPI.login({ email, password });
+      
+      if (response.data.access) {
+        localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('refresh_token', response.data.refresh);
+        
+        // Get user profile
+        const profileResponse = await authAPI.getProfile();
+        const userData = profileResponse.data;
+        
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        
+        return { data: userData, error: null };
       }
-      return { data, error };
+    } catch (error: any) {
+      return { 
+        data: null, 
+        error: { message: error.response?.data?.detail || 'Login failed' }
+      };
     } finally {
       setLoading(false);
     }
@@ -47,37 +48,38 @@ export const useAuth = () => {
   const register = async (email: string, password: string, userData: any) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const response = await authAPI.register({
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: userData
-        }
+        ...userData
       });
-      return { data, error };
+      
+      return { data: response.data, error: null };
+    } catch (error: any) {
+      return { 
+        data: null, 
+        error: { message: error.response?.data?.detail || 'Registration failed' }
+      };
     } finally {
       setLoading(false);
     }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setUser(null);
-      setSession(null);
-    }
-    return { error };
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    setUser(null);
+    return { error: null };
   };
 
   const logout = signOut; // Alias for compatibility
 
   const isAuthenticated = !!user;
-  const isVendor = user?.user_metadata?.user_type === 'vendor';
+  const isVendor = user?.user_type === 'vendor';
 
   return {
     user,
-    session,
     loading,
     login,
     register,
