@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import HomePage from "./pages/home";
 import Categories from "./pages/Categories";
 import EventsPage from "./pages/events";
@@ -34,11 +35,27 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+            <Route path="/vendor/dashboard" element={
+              <ProtectedRoute requireVendor>
+                <VendorDashboard />
+              </ProtectedRoute>
+            } />
             <Route path="/vendor/:id" element={<ProductPage />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/payment" element={
+              <ProtectedRoute requireVendor>
+                <Payment />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute requireAdmin>
+                <AdminPanel />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat" element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

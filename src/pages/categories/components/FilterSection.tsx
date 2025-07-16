@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Filter } from 'lucide-react';
-import { useCategories } from '@/hooks/useCategories';
+import { useSupabaseCategories } from '@/hooks/useSupabaseCategories';
 
 interface FilterSectionProps {
   selectedCategory: string;
@@ -24,7 +24,7 @@ const FilterSection = ({
   rating,
   setRating
 }: FilterSectionProps) => {
-  const { categories } = useCategories();
+  const { categories } = useSupabaseCategories();
   const categoryOptions = ['All', ...categories.map(cat => cat.name)];
   const locations = ['All', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Pune', 'Hyderabad'];
 

@@ -3,8 +3,8 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FilterSection from './categories/components/FilterSection';
 import VendorCard from './categories/components/VendorCard';
-import { useVendors } from '@/hooks/useVendors';
-import { useCategories } from '@/hooks/useCategories';
+import { useSupabaseVendors } from '@/hooks/useSupabaseVendors';
+import { useSupabaseCategories } from '@/hooks/useSupabaseCategories';
 
 const Categories = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -12,19 +12,19 @@ const Categories = () => {
   const [priceRange, setPriceRange] = useState('');
   const [rating, setRating] = useState('');
 
-  const { vendors, loading, error } = useVendors(selectedCategory, selectedLocation);
-  const { categories } = useCategories();
+  const { vendors, loading, error } = useSupabaseVendors(selectedCategory, selectedLocation);
+  const { categories } = useSupabaseCategories();
 
   // Transform vendors data to match the expected format
   const transformedVendors = vendors.map((vendor) => ({
     id: vendor.id,
     name: vendor.business_name || vendor.vendor_name || 'Unknown Vendor',
-    category: vendor.categories || [],
+    category: vendor.categories?.[0] || 'Unknown',
     location: vendor.city || vendor.address?.split(',')[0] || 'Unknown Location',
-    rating: vendor.rating || 4.5,
-    reviews: vendor.total_reviews || Math.floor(Math.random() * 100) + 10,
-    price: vendor.price_range || `₹${Math.floor(Math.random() * 50000) + 10000} - ₹${Math.floor(Math.random() * 100000) + 50000}`,
-    image: vendor.images?.[0] || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000000) + 1000000000000}?w=400&h=300&fit=crop`,
+    rating: 4.5,
+    reviews: Math.floor(Math.random() * 100) + 10,
+    price: `₹${Math.floor(Math.random() * 50000) + 10000} - ₹${Math.floor(Math.random() * 100000) + 50000}`,
+    image: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000000) + 1000000000000}?w=400&h=300&fit=crop`,
     featured: Math.random() > 0.7
   }));
 

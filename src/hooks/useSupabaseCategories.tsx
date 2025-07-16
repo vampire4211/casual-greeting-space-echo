@@ -18,4 +18,47 @@ export const useSupabaseCategories = () => {
       setLoading(true);
       setError(null);
       
-      const { data, error } = a
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name', { ascending: true });
+      
+      if (error) throw error;
+      
+      setCategories(data || []);
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch categories');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addCategory = async (name: string, description?: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .insert({ name, description })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      setCategories(prev => [...prev, data]);
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  return { 
+    categories, 
+    loading, 
+    error, 
+    refetch: fetchCategories,
+    addCategory 
+  };
+};
