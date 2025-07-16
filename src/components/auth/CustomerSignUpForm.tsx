@@ -17,6 +17,7 @@ interface CustomerSignUpFormProps {
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
   onSubmit: (e: React.FormEvent) => void;
+  loading?: boolean;
 }
 
 const CustomerSignUpForm: React.FC<CustomerSignUpFormProps> = ({
@@ -24,7 +25,8 @@ const CustomerSignUpForm: React.FC<CustomerSignUpFormProps> = ({
   setCustomerData,
   showPassword,
   setShowPassword,
-  onSubmit
+  onSubmit,
+  loading = false
 }) => {
   return (
     <>
@@ -95,8 +97,8 @@ const CustomerSignUpForm: React.FC<CustomerSignUpFormProps> = ({
           </div>
         </div>
 
-        <Button type="submit" className="w-full">
-          Create Account
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? 'Creating Account...' : 'Create Account'}
         </Button>
 
         <div className="relative">

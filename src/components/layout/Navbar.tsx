@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from 'sonner';
 
 const Navbar = () => {
@@ -10,7 +10,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout, isAuthenticated, isVendor } = useAuth();
+  const { user, signOut, isAuthenticated, isVendor } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,7 +22,7 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await logout();
+    await signOut();
     toast.success('Logged out successfully');
     navigate('/');
   };
@@ -78,7 +78,7 @@ const Navbar = () => {
           {isAuthenticated ? (
             <>
               <span className="text-sm text-muted-foreground">
-                Welcome, {user?.first_name || user?.username}
+                Welcome, {user?.profile?.name || user?.email}
               </span>
               <Button variant="outline" onClick={handleLogout}>
                 Logout
@@ -89,7 +89,7 @@ const Navbar = () => {
               <Button variant="outline" onClick={() => navigate('/auth')}>
                 Sign In
               </Button>
-              <Button onClick={() => navigate('/auth')}>
+              <Button onClick={() => navigate('/signup')}>
                 Sign Up
               </Button>
             </>
@@ -147,25 +147,40 @@ const Navbar = () => {
               )}
               
               <div className="pt-4 border-t border-gray-200 space-y-3">
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    navigate('/signin');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full py-3 text-base"
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  onClick={() => {
-                    navigate('/signup');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full py-3 text-base"
-                >
-                  Sign Up
-                </Button>
+                {isAuthenticated ? (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full py-3 text-base"
+                  >
+                    Logout
+                  </Button>
+                ) : (
+                  <>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        navigate('/signin');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full py-3 text-base"
+                    >
+                      Sign In
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        navigate('/signup');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full py-3 text-base"
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -25,6 +25,7 @@ interface VendorSignUpFormProps {
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
   onSubmit: (e: React.FormEvent) => void;
+  loading?: boolean;
 }
 
 const categories = [
@@ -45,7 +46,8 @@ const VendorSignUpForm: React.FC<VendorSignUpFormProps> = ({
   handleCategoryToggle,
   showPassword,
   setShowPassword,
-  onSubmit
+  onSubmit,
+  loading = false
 }) => {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -202,8 +204,8 @@ const VendorSignUpForm: React.FC<VendorSignUpFormProps> = ({
         </div>
       </div>
 
-      <Button type="submit" className="w-full">
-        Sign Up
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? 'Creating Account...' : 'Sign Up'}
       </Button>
     </form>
   );

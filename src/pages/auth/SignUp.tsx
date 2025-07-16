@@ -3,16 +3,18 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from 'lucide-react';
-import DocumentVerification from '@/components/verification/DocumentVerification';
 import CustomerSignUpForm from '@/components/auth/CustomerSignUpForm';
 import VendorSignUpForm from '@/components/auth/VendorSignUpForm';
+import { useAuth } from '@/components/auth/AuthProvider';
+import { toast } from 'sonner';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [userType, setUserType] = useState('customer');
   const [showPassword, setShowPassword] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'verification', 'complete'
+  const [loading, setLoading] = useState(false);
   
   const [customerData, setCustomerData] = useState({
     name: '',
@@ -44,56 +46,63 @@ const SignUp = () => {
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    if (userType === 'vendor') {
-      if (selectedCategories.length === 0) {
-        alert('Please select at least one category');
-        return;
+    try {
+      if (userType === 'vendor') {
+        if (selectedCategories.length === 0) {
+          toast.error('Please select at least one category');
+          return;
+        }
+        
+        const { data, error } = await signUp(vendorData.email, vendorData.password, {
+          user_type: 'vendor',
+          first_name: vendorData.fullName.split(' ')[0],
+          last_name: vendorData.fullName.split(' ').slice(1).join(' '),
+          phone: vendorData.phone,
+          business_name: vendorData.businessName,
+          categories: selectedCategories,
+          aadhaar_number: vendorData.aadhaar,
+          pan_number: vendorData.pan,
+          gst_number: vendorData.gst,
+          address: vendorData.address,
+          age: vendorData.age,
+          gender: vendorData.gender
+        });
+        
+        if (error) {
+          toast.error(error.message || 'Registration failed');
+          return;
+        }
+        
+        toast.success('Account created successfully! Please check your email to verify your account.');
+        navigate('/payment');
+      } else {
+        const { data, error } = await signUp(customerData.email, customerData.password, {
+          user_type: 'customer',
+          first_name: customerData.name.split(' ')[0],
+          last_name: customerData.name.split(' ').slice(1).join(' '),
+          phone: customerData.phone,
+          gender: customerData.gender
+        });
+        
+        if (error) {
+          toast.error(error.message || 'Registration failed');
+          return;
+        }
+        
+        toast.success('Account created successfully! Please check your email to verify your account.');
+        navigate('/');
       }
-      console.log('Vendor signup:', vendorData, 'Categories:', selectedCategories);
-      localStorage.setItem('userType', 'vendor');
-      navigate('/vendor/dashboard');
-    } else {
-      console.log('Customer signup:', customerData);
-      navigate('/');
+    } catch (error) {
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleVerificationComplete = (verifiedData: any) => {
-    console.log('Vendor signup with verification:', {
-      ...vendorData,
-      categories: selectedCategories,
-      verification: verifiedData
-    });
-    
-    // Navigate to subscription page after verification
-    setTimeout(() => {
-      navigate('/payment');
-    }, 2000);
-  };
-
-  if (currentStep === 'verification' && userType === 'vendor') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/10 to-blue-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl">
-          <CardHeader className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Calendar className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold text-primary">Event Sathi</span>
-            </div>
-            <CardTitle className="text-2xl">Document Verification</CardTitle>
-            <p className="text-gray-600">Complete KYC to activate your vendor account</p>
-          </CardHeader>
-          
-          <CardContent>
-            <DocumentVerification onVerificationComplete={handleVerificationComplete} />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-blue-50 flex items-center justify-center p-4">
@@ -140,6 +149,7 @@ const SignUp = () => {
               showPassword={showPassword}
               setShowPassword={setShowPassword}
               onSubmit={handleFormSubmit}
+              loading={loading}
             />
           ) : (
             <VendorSignUpForm
@@ -150,6 +160,7 @@ const SignUp = () => {
               showPassword={showPassword}
               setShowPassword={setShowPassword}
               onSubmit={handleFormSubmit}
+              loading={loading}
             />
           )}
 

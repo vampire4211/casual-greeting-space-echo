@@ -5,11 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
 import SignInForm from './components/SignInForm';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/components/auth/AuthProvider';
+import { toast } from 'sonner';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { signIn } = useAuth();
   const [userType, setUserType] = useState('customer');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,25 +24,27 @@ const SignIn = () => {
     setLoading(true);
     
     try {
-      // Mock authentication
-      setTimeout(() => {
-        toast({
-          title: "Welcome back!",
-          description: "You have been signed in successfully.",
-        });
-        if (userType === 'vendor') {
+      const { data, error } = await signIn(formData.email, formData.password);
+      
+      if (error) {
+        toast.error(error.message || 'Sign in failed');
+        return;
+      }
+      
+      if (data?.user) {
+        toast.success('Welcome back!');
+        
+        // Navigate based on user type
+        const userMetadata = data.user.user_metadata;
+        if (userMetadata?.user_type === 'vendor') {
           navigate('/vendor/dashboard');
         } else {
           navigate('/');
         }
-        setLoading(false);
-      }, 1000);
+      }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
