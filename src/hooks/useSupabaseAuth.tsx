@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { auth } from '@/integrations/supabase/auth';
 import type { User } from '@supabase/supabase-js';
+import type { UserProfile } from '@/integrations/supabase/types';
 
-interface UserProfile {
-  id: string;
-  email: string;
-  user_type: 'customer' | 'vendor' | 'admin';
-  profile: any;
+export interface AuthUser extends User {
+  user_type?: 'customer' | 'vendor' | 'admin';
 }
+
 
 export const useSupabaseAuth = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -24,7 +23,7 @@ export const useSupabaseAuth = () => {
           id: currentUser.id,
           email: currentUser.email!,
           user_type: userType as 'customer' | 'vendor' | 'admin',
-          profile
+          // profile
         });
       }
       
@@ -41,7 +40,7 @@ export const useSupabaseAuth = () => {
           id: session.user.id,
           email: session.user.email!,
           user_type: userType as 'customer' | 'vendor' | 'admin',
-          profile
+          // profile
         });
       } else {
         setUser(null);
@@ -52,7 +51,7 @@ export const useSupabaseAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, userData: any) => {
+  const signUp = async (email: string, password: string, userData: UserProfile) => {
     setLoading(true);
     const result = await auth.signUp(email, password, userData);
     setLoading(false);

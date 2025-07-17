@@ -884,3 +884,22 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  user_type: 'customer' | 'vendor' | 'admin';
+  first_name?: string;
+  last_name?: string;
+  gender?: string;
+  phone?: string;
+  business_name?: string;
+  aadhaar_number?: string;
+  pan_number?: string;
+  gst_number?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  categories?: string[];
+}

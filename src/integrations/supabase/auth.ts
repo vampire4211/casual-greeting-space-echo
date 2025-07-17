@@ -1,13 +1,17 @@
 import { supabase } from './client';
 import type { User } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { UserProfile } from '@/integrations/supabase/types';
 
 export interface AuthUser extends User {
   user_type?: 'customer' | 'vendor' | 'admin';
 }
 
+
+
 export const auth = {
+  signUp: async (email: string, password: string, userData: UserProfile) => {
   // Sign up with email and password
-  signUp: async (email: string, password: string, userData: any) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -108,7 +112,10 @@ export const auth = {
   },
 
   // Listen to auth changes
-  onAuthStateChange: (callback: (event: string, session: any) => void) => {
-    return supabase.auth.onAuthStateChange(callback);
-  }
+ onAuthStateChange: (
+  callback: (event: AuthChangeEvent, session: Session | null) => void
+) => {
+  return supabase.auth.onAuthStateChange(callback);
+}
+
 };
