@@ -86,7 +86,7 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Button variant="outline" onClick={() => navigate('/signin')}>
+              <Button variant="outline" onClick={() => navigate('/Auth')}>
                 Sign In
               </Button>
               <Button onClick={() => navigate('/signup')}>
