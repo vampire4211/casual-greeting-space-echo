@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'payments',
     'chats',
     'media_storage',
-    'admin_panel',
+    'admin_system',
 ]
 
 MIDDLEWARE = [
@@ -128,7 +128,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
-</parameter>
+# </parameter>
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
