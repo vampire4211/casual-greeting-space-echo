@@ -13,12 +13,27 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  esbuild: false,
+  esbuild: {
+    loader: 'jsx',
+    include: /\.(jsx|js)$/,
+    exclude: /\.(tsx|ts)$/,
+  },
   define: {
     global: 'globalThis',
   },
   build: {
     target: 'es2015',
     minify: 'esbuild',
+    rollupOptions: {
+      external: [],
+      input: {
+        main: path.resolve(__dirname, 'index.html')
+      }
+    },
   },
+  // Completely disable TypeScript checking
+  typescript: {
+    check: false,
+    build: false
+  }
 });
