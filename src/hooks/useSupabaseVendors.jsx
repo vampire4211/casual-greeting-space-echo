@@ -1,21 +1,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-export interface SupabaseVendor {
-  id: string;
-  business_name: string;
-  vendor_name: string;
-  email: string;
-  phone_number: string;
-  address: string;
-  categories: string[];
-  created_at: string;
-}
-
-export const useSupabaseVendors = (category?: string, location?: string) => {
-  const [vendors, setVendors] = useState<SupabaseVendor[]>([]);
+export const useSupabaseVendors = (category, location) => {
+  const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string |null>(null);
+  const [error, setError] = useState(null);
 
   const fetchVendors = async () => {
     try {
@@ -29,7 +18,7 @@ export const useSupabaseVendors = (category?: string, location?: string) => {
       
       // Filter by category if provided
       if (category && category !== 'All') {
-        query =query.contains('categories', [category]);
+        query = query.contains('categories', [category]);
       }
       
       // Filter by location if provided
@@ -41,8 +30,14 @@ export const useSupabaseVendors = (category?: string, location?: string) => {
       
       if (error) throw error;
       
-      setVendors(data || []);
-    } catch (err: any) {
+      // Transform the data to ensure categories is always an array
+      const transformedData = (data || []).map(vendor => ({
+        ...vendor,
+        categories: Array.isArray(vendor.categories) ? vendor.categories : []
+      }));
+      
+      setVendors(transformedData);
+    } catch (err) {
       setError(err.message || 'Failed to fetch vendors');
     } finally {
       setLoading(false);

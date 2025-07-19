@@ -20,7 +20,7 @@ const Categories = () => {
     id: vendor.id,
     name: vendor.business_name || vendor.vendor_name || 'Unknown Vendor',
     category: vendor.categories?.[0] || 'Unknown',
-    location: vendor.city || vendor.address?.split(',')[0] || 'Unknown Location',
+    location: vendor.address?.split(',')[0] || 'Unknown Location',
     rating: 4.5,
     reviews: Math.floor(Math.random() * 100) + 10,
     price: `₹${Math.floor(Math.random() * 50000) + 10000} - ₹${Math.floor(Math.random() * 100000) + 50000}`,
