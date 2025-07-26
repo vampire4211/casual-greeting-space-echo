@@ -7,23 +7,22 @@ export default defineConfig({
     host: "::",
     port: 5173,
   },
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxRuntime: 'classic'
+    })
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  esbuild: {
-    loader: 'jsx',
-    include: /\.(jsx|js)$/,
-    exclude: /\.(tsx|ts)$/,
-  },
+  esbuild: false,
   define: {
     global: 'globalThis',
   },
   build: {
     target: 'es2015',
-    minify: 'esbuild',
     rollupOptions: {
       external: [],
       input: {
@@ -31,9 +30,4 @@ export default defineConfig({
       }
     },
   },
-  // Completely disable TypeScript checking
-  typescript: {
-    check: false,
-    build: false
-  }
 });
